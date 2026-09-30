@@ -32,7 +32,7 @@ function renderToday(){
   };
   root.innerHTML =
     '<div class="dayhead card-corners">' + CORNERS +
-      '<div class="dn">Día ' + dayN + ' <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#heartrose"/></svg></div>' +
+      '<div class="dn">Día ' + dayN + ' <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#heartseal"/></svg></div>' +
       '<div class="dmeta">' + (st ? st + '-day streak' : 'Start your streak today') + ' · ' + learnedIndexes(all).length + ' words met</div>' +
       '<div class="gprog"><div class="bar"><i style="width:' + (doneN / STEPS.length * 100) + '%"></i></div></div>' +
     '</div>' +

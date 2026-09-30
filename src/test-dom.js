@@ -358,7 +358,7 @@ cut.fire('error');
 ok(P.spoken.length === 1, 'but never for a line that was already replaced');
 topic('words');
 ok(P.played[P.played.length - 1].paused, 'changing tabs stops the voice');
-ok(/Un poquito cada día/.test($('header').textContent) && $('header use').getAttribute('href') === '#heartrose', 'the heart and rose at the top, with “Un poquito cada día”');
+ok(/Un poquito cada día/.test($('header').textContent) && $('header use').getAttribute('href') === '#heartseal', 'the heart at the top, with “Un poquito cada día”');
 
 head('a phone without a Spanish voice');
 P = makePage({ voices: [{ lang: 'en-US', name: 'Samantha' }] }); w = P.w; d = P.d;

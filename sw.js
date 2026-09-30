@@ -1,7 +1,7 @@
 /* Keeps a copy of the study guide on the device so it opens without a connection.
    The page itself is fetched network-first (updates show up when online);
    everything else is served from the cache once seen.                        */
-var CACHE = "espanol-v5";
+var CACHE = "espanol-v6";
 var CORE = ["./", "./index.html", "./icon.png", "./manifest.webmanifest"];
 
 self.addEventListener("install", function(e){

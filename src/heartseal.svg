@@ -1,26 +1,3 @@
-<svg width="0" height="0" style="position:absolute;width:0;height:0" aria-hidden="true" focusable="false">
-  <symbol id="flourish" viewBox="0 0 320 44">
-    <g id="flh" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
-      <path d="M160 22 C132 22 110 6 80 14 C60 19 48 30 30 24"/>
-      <path d="M30 24 c-7-3-14 2-12 8 c2 5 9 5 10 0 c0.6-3-2-5-4.5-4"/>
-      <path d="M158 30 C130 34 114 24 88 28 C74 30 66 37 54 36" stroke-width=".8" opacity=".75"/>
-      <path d="M54 36 c-5-1-9 3-7 7 c2 3 6 2 6-1" stroke-width=".8" opacity=".75"/>
-      <path d="M104 15 c3-10 12-15 22-13 c-4 7-12 12-22 13z" fill="currentColor" stroke="none" opacity=".9"/>
-      <path d="M130 19 c3 8 11 13 20 11 c-3-6-10-11-20-11z" fill="currentColor" stroke="none" opacity=".75"/>
-      <path d="M70 18 c2-7 9-10 15-8 c-3 5-8 8-15 8z" fill="currentColor" stroke="none" opacity=".7"/>
-    </g>
-    <use href="#flh" transform="matrix(-1 0 0 1 320 0)"/>
-    <path d="M160 16 l6 6-6 6-6-6z" fill="currentColor"/>
-  </symbol>
-  <symbol id="corner" viewBox="0 0 60 60">
-    <g fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round">
-      <path d="M4 58 V26 C4 12 12 4 26 4 H58"/>
-      <path d="M12 52 V30 C12 20 20 12 30 12 H52" stroke-width=".7" opacity=".7"/>
-      <path d="M26 4 c-9 4-12 15-3 19 c6 3 11-3 8-7 c-2-3-7-1-5 2"/>
-    </g>
-    <path d="M28 20 c6-3 12-1 14 6 c-6 1-11-1-14-6z" fill="currentColor" opacity=".8"/>
-    <path d="M8 8 l4 4-4 4-4-4z" fill="currentColor"/>
-  </symbol>
   <!-- an ornate heart: the app icon and the seal at the top of the page -->
   <symbol id="heartseal" viewBox="0 0 120 120">
     <g fill="#c6a469"><circle cx="60.00" cy="40.40" r="1.25"/><circle cx="60.05" cy="39.71" r=".7"/><circle cx="60.42" cy="37.72" r="1.25"/><circle cx="61.38" cy="34.66" r=".7"/><circle cx="63.16" cy="30.86" r="1.25"/><circle cx="65.90" cy="26.76" r=".7"/><circle cx="69.66" cy="22.82" r="1.25"/><circle cx="74.38" cy="19.49" r=".7"/><circle cx="79.91" cy="17.14" r="1.25"/><circle cx="86.01" cy="16.08" r=".7"/><circle cx="92.37" cy="16.45" r="1.25"/><circle cx="98.63" cy="18.30" r=".7"/><circle cx="104.41" cy="21.54" r="1.25"/><circle cx="109.35" cy="25.99" r=".7"/><circle cx="113.14" cy="31.39" r="1.25"/><circle cx="115.51" cy="37.46" r=".7"/><circle cx="116.32" cy="43.92" r="1.25"/><circle cx="115.51" cy="50.52" r=".7"/><circle cx="113.14" cy="57.07" r="1.25"/><circle cx="109.35" cy="63.44" r=".7"/><circle cx="104.41" cy="69.57" r="1.25"/><circle cx="98.63" cy="75.45" r=".7"/><circle cx="92.37" cy="81.10" r="1.25"/><circle cx="86.01" cy="86.55" r=".7"/><circle cx="79.91" cy="91.82" r="1.25"/><circle cx="74.38" cy="96.87" r=".7"/><circle cx="69.66" cy="101.67" r="1.25"/><circle cx="65.90" cy="106.10" r=".7"/><circle cx="63.16" cy="110.03" r="1.25"/><circle cx="61.38" cy="113.30" r=".7"/><circle cx="60.42" cy="115.78" r="1.25"/><circle cx="60.05" cy="117.32" r=".7"/><circle cx="60.00" cy="117.84" r="1.25"/><circle cx="59.95" cy="117.32" r=".7"/><circle cx="59.58" cy="115.78" r="1.25"/><circle cx="58.62" cy="113.30" r=".7"/><circle cx="56.84" cy="110.03" r="1.25"/><circle cx="54.10" cy="106.10" r=".7"/><circle cx="50.34" cy="101.67" r="1.25"/><circle cx="45.62" cy="96.87" r=".7"/><circle cx="40.09" cy="91.82" r="1.25"/><circle cx="33.99" cy="86.55" r=".7"/><circle cx="27.63" cy="81.10" r="1.25"/><circle cx="21.37" cy="75.45" r=".7"/><circle cx="15.59" cy="69.57" r="1.25"/><circle cx="10.65" cy="63.44" r=".7"/><circle cx="6.86" cy="57.07" r="1.25"/><circle cx="4.49" cy="50.52" r=".7"/><circle cx="3.68" cy="43.92" r="1.25"/><circle cx="4.49" cy="37.46" r=".7"/><circle cx="6.86" cy="31.39" r="1.25"/><circle cx="10.65" cy="25.99" r=".7"/><circle cx="15.59" cy="21.54" r="1.25"/><circle cx="21.37" cy="18.30" r=".7"/><circle cx="27.63" cy="16.45" r="1.25"/><circle cx="33.99" cy="16.08" r=".7"/><circle cx="40.09" cy="17.14" r="1.25"/><circle cx="45.62" cy="19.49" r=".7"/><circle cx="50.34" cy="22.82" r="1.25"/><circle cx="54.10" cy="26.76" r=".7"/><circle cx="56.84" cy="30.86" r="1.25"/><circle cx="58.62" cy="34.66" r=".7"/><circle cx="59.58" cy="37.72" r="1.25"/><circle cx="59.95" cy="39.71" r=".7"/></g>
@@ -33,21 +10,3 @@
     <path d="M60.00 64.90 L60.00 64.89 L60.00 64.84 L60.01 64.77 L60.02 64.67 L60.04 64.55 L60.06 64.40 L60.10 64.22 L60.15 64.02 L60.21 63.80 L60.28 63.56 L60.37 63.30 L60.48 63.03 L60.61 62.74 L60.75 62.44 L60.91 62.14 L61.10 61.82 L61.30 61.51 L61.53 61.19 L61.77 60.87 L62.04 60.56 L62.33 60.25 L62.64 59.95 L62.97 59.67 L63.31 59.39 L63.68 59.14 L64.07 58.90 L64.47 58.68 L64.89 58.48 L65.32 58.31 L65.77 58.16 L66.23 58.04 L66.70 57.95 L67.18 57.88 L67.66 57.85 L68.15 57.84 L68.64 57.86 L69.13 57.92 L69.63 58.01 L70.12 58.12 L70.60 58.27 L71.08 58.45 L71.54 58.65 L72.00 58.89 L72.44 59.15 L72.87 59.43 L73.28 59.75 L73.67 60.08 L74.04 60.44 L74.39 60.82 L74.71 61.22 L75.00 61.64 L75.27 62.07 L75.51 62.51 L75.72 62.97 L75.90 63.45 L76.05 63.93 L76.17 64.42 L76.25 64.91 L76.30 65.41 L76.32 65.92 L76.30 66.43 L76.25 66.94 L76.17 67.45 L76.05 67.96 L75.90 68.47 L75.72 68.98 L75.51 69.48 L75.27 69.98 L75.00 70.48 L74.71 70.97 L74.39 71.45 L74.04 71.94 L73.67 72.41 L73.28 72.89 L72.87 73.35 L72.44 73.81 L72.00 74.27 L71.54 74.72 L71.08 75.17 L70.60 75.61 L70.12 76.05 L69.63 76.48 L69.13 76.91 L68.64 77.33 L68.15 77.75 L67.66 78.17 L67.18 78.58 L66.70 78.99 L66.23 79.40 L65.77 79.80 L65.32 80.20 L64.89 80.59 L64.47 80.98 L64.07 81.36 L63.68 81.74 L63.31 82.11 L62.97 82.47 L62.64 82.83 L62.33 83.18 L62.04 83.52 L61.77 83.86 L61.53 84.18 L61.30 84.49 L61.10 84.79 L60.91 85.08 L60.75 85.35 L60.61 85.61 L60.48 85.85 L60.37 86.08 L60.28 86.29 L60.21 86.49 L60.15 86.66 L60.10 86.82 L60.06 86.95 L60.04 87.07 L60.02 87.17 L60.01 87.24 L60.00 87.30 L60.00 87.33 L60.00 87.34 L60.00 87.33 L60.00 87.30 L59.99 87.24 L59.98 87.17 L59.96 87.07 L59.94 86.95 L59.90 86.82 L59.85 86.66 L59.79 86.49 L59.72 86.29 L59.63 86.08 L59.52 85.85 L59.39 85.61 L59.25 85.35 L59.09 85.08 L58.90 84.79 L58.70 84.49 L58.47 84.18 L58.23 83.86 L57.96 83.52 L57.67 83.18 L57.36 82.83 L57.03 82.47 L56.69 82.11 L56.32 81.74 L55.93 81.36 L55.53 80.98 L55.11 80.59 L54.68 80.20 L54.23 79.80 L53.77 79.40 L53.30 78.99 L52.82 78.58 L52.34 78.17 L51.85 77.75 L51.36 77.33 L50.87 76.91 L50.37 76.48 L49.88 76.05 L49.40 75.61 L48.92 75.17 L48.46 74.72 L48.00 74.27 L47.56 73.81 L47.13 73.35 L46.72 72.89 L46.33 72.41 L45.96 71.94 L45.61 71.45 L45.29 70.97 L45.00 70.48 L44.73 69.98 L44.49 69.48 L44.28 68.98 L44.10 68.47 L43.95 67.96 L43.83 67.45 L43.75 66.94 L43.70 66.43 L43.68 65.92 L43.70 65.41 L43.75 64.91 L43.83 64.42 L43.95 63.93 L44.10 63.45 L44.28 62.97 L44.49 62.51 L44.73 62.07 L45.00 61.64 L45.29 61.22 L45.61 60.82 L45.96 60.44 L46.33 60.08 L46.72 59.75 L47.13 59.43 L47.56 59.15 L48.00 58.89 L48.46 58.65 L48.92 58.45 L49.40 58.27 L49.88 58.12 L50.37 58.01 L50.87 57.92 L51.36 57.86 L51.85 57.84 L52.34 57.85 L52.82 57.88 L53.30 57.95 L53.77 58.04 L54.23 58.16 L54.68 58.31 L55.11 58.48 L55.53 58.68 L55.93 58.90 L56.32 59.14 L56.69 59.39 L57.03 59.67 L57.36 59.95 L57.67 60.25 L57.96 60.56 L58.23 60.87 L58.47 61.19 L58.70 61.51 L58.90 61.82 L59.09 62.14 L59.25 62.44 L59.39 62.74 L59.52 63.03 L59.63 63.30 L59.72 63.56 L59.79 63.80 L59.85 64.02 L59.90 64.22 L59.94 64.40 L59.96 64.55 L59.98 64.67 L59.99 64.77 L60.00 64.84 L60.00 64.89 Z" fill="none" stroke="#c6a469" stroke-width=".6" opacity=".9"/>
     <path d="M52.8 65.5 C53.6 63.6 55.6 63 57 64" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity=".7"/>
   </symbol>
-  <symbol id="i-say" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
-</svg>
-
-<div class="rail left" aria-hidden="true">
-  <span class="stem"></span>
-  <span class="bead top"></span>
-  <svg class="vine" viewBox="0 0 44 320" aria-hidden="true"><g transform="translate(44,0) rotate(90)"><use href="#flourish" width="320" height="44"/></g></svg>
-  <span class="bead bot"></span>
-  <span class="stem"></span>
-</div>
-<div class="rail right" aria-hidden="true">
-  <span class="stem"></span>
-  <span class="bead top"></span>
-  <svg class="vine" viewBox="0 0 44 320" aria-hidden="true"><g transform="translate(44,0) rotate(90)"><use href="#flourish" width="320" height="44"/></g></svg>
-  <span class="bead bot"></span>
-  <span class="stem"></span>
-</div>
-
