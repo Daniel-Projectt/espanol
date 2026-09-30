@@ -21,10 +21,11 @@ function save(k, v){
 /* the learner's own endings: "Estoy cansad{o|a}" → cansado (man) / cansada (woman).
    Applied once to the data at start; changing the setting reloads the page. */
 function genderize(s, g){ return String(s).replace(/\{([^|{}]*)\|([^|{}]*)\}/g, g === "m" ? "$1" : "$2"); }
-var GENDER = load("gender", "f");
-WORDS.forEach(function(w){ for(var k = 0; k < 4; k++) w[k] = genderize(w[k], GENDER); });
-CONNECTORS.forEach(function(c){ for(var k = 1; k < c.length; k++) c[k] = genderize(c[k], GENDER); });
-DIALOGUES.forEach(function(d){ d.lines.forEach(function(l){ l[1] = genderize(l[1], GENDER); l[2] = genderize(l[2], GENDER); }); });
+var GENDER = load("gender", "f"), GENDER_OTHER = [];   /* the other gender's Spanish lines, so both get recorded */
+function other(s){ if(/\{[^{}|]*\|[^{}|]*\}/.test(s)) GENDER_OTHER.push(genderize(s, GENDER === "m" ? "f" : "m")); return s; }
+WORDS.forEach(function(w){ other(w[2]); for(var k = 0; k < 4; k++) w[k] = genderize(w[k], GENDER); });
+CONNECTORS.forEach(function(c){ other(c[3]); for(var k = 1; k < c.length; k++) c[k] = genderize(c[k], GENDER); });
+DIALOGUES.forEach(function(d){ d.lines.forEach(function(l){ other(l[1]); l[1] = genderize(l[1], GENDER); l[2] = genderize(l[2], GENDER); }); });
 
 /* local calendar day as a number, so "today" flips at the user's midnight */
 function dayNumber(date){
@@ -50,31 +51,14 @@ function fold(s){
 function words(s){
   return fold(s).replace(/[¿?¡!.,;:—–\-“”"'’…()\[\]\/]/g, " ").split(/\s+/).filter(Boolean);
 }
-/* how much of the target the speaker said, in order (longest common subsequence of words) */
-function speechScore(heard, target){
-  var h = words(heard), t = words(target);
-  if(!t.length) return {ratio:0, marks:[]};
-  var m = [], i, j;
-  for(i = 0; i <= t.length; i++){ m.push([]); for(j = 0; j <= h.length; j++) m[i].push(0); }
-  for(i = t.length - 1; i >= 0; i--) for(j = h.length - 1; j >= 0; j--)
-    m[i][j] = t[i] === h[j] ? m[i+1][j+1] + 1 : Math.max(m[i+1][j], m[i][j+1]);
-  var marks = [], ii = 0, jj = 0;
-  while(ii < t.length){
-    if(jj < h.length && t[ii] === h[jj]){ marks.push(true); ii++; jj++; }
-    else if(jj < h.length && m[ii][jj+1] >= m[ii+1][jj]) jj++;
-    else { marks.push(false); ii++; }
-  }
-  return {ratio: m[0][0] / t.length, marks: marks};
+/* the exact text that is spoken (and recorded): tidy symbols the voice shouldn't read */
+function speechText(t){ return String(t).replace(/—/g, " ").replace(/…-ando/g, "…").replace(/\s\/\s/g, ", ").replace(/[“”]/g, "").replace(/\s+/g, " ").trim(); }
+/* the name of a line's recording: FNV-1a over its characters (tools/record.py does the same) */
+function audioKey(t){
+  var h = 0x811c9dc5;
+  for(var i = 0; i < t.length; i++){ h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return ("0000000" + h.toString(16)).slice(-8);
 }
-/* the best of the recognizer's guesses */
-function bestScore(alternatives, target){
-  var best = {ratio:-1, marks:[], heard:""};
-  (alternatives || []).forEach(function(a){
-    var s = speechScore(a, target); if(s.ratio > best.ratio){ best = s; best.heard = a; }
-  });
-  return best;
-}
-var PASS = 0.8;
 
 /* typed answer: exact, right-but-for-accents, or wrong */
 function checkTyped(given, answer){
@@ -258,5 +242,25 @@ function buildPrompts(n, rnd){
     var b = BUILD_GEN[Math.floor((rnd || Math.random)() * BUILD_GEN.length)], v = vs[Math.floor((rnd || Math.random)() * vs.length)];
     out.push({es:b[0] + " " + v.inf + ".", en:b[1] + " " + v.e[0] + ".", hint:b[0] + "…"});
   }
+  return out;
+}
+
+/* every line the app can say aloud, exactly as spoken: the list tools/record.py records */
+function spokenLines(){
+  var seen = {}, out = [];
+  function add(x){ var t = speechText(x); if(t && !seen[t]){ seen[t] = 1; out.push(t); } }
+  WORDS.forEach(function(w){ add(w[0]); add(w[2]); });
+  SURVIVAL.forEach(function(s){ add(s[1]); });
+  BUILDERS.forEach(function(b){ b.ex.forEach(function(x){ add(x[0]); }); });
+  BUILD_GEN.forEach(function(b){ VERBS.forEach(function(v){ if(BUILD_OK.indexOf(v.inf) >= 0) add(b[0] + " " + v.inf + "."); }); });
+  CONNECTORS.forEach(function(c){ add(c[3]); });
+  DIALOGUES.forEach(function(d){ d.lines.forEach(function(l){ add(l[1]); }); });
+  LESSONS.forEach(function(l){ l.ex.forEach(function(x){ add(x[0]); }); });
+  PATTERNS.forEach(function(p){ if(!/-/.test(p.l)) add(p.l.replace(/ · /g, ", ")); });
+  VERBS.forEach(function(v){
+    add(v.inf);
+    TENSES.forEach(function(t){ var f = conjugate(v, t.k); if(Array.isArray(f)) f.forEach(add); else if(f) add(f); });
+  });
+  GENDER_OTHER.forEach(add);
   return out;
 }

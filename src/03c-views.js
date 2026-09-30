@@ -76,13 +76,12 @@ function reviewRunner(box, done){
     box.innerHTML = '<div class="say card-corners">' + CORNERS + '<div class="qnum">' + (total - queue.length + 1) + ' of ' + total + '</div>' +
       (dir === "recognize"
         ? '<p class="prompt-lab">What does it mean?</p><div class="prompt es">' + esc(w[0]) + ' ' + sayBtn(w[0]) + '</div>'
-        : '<p class="prompt-lab">Say in Spanish</p><div class="prompt">' + esc(w[1]) + '</div><div class="micbox"></div>') +
+        : '<p class="prompt-lab">Say in Spanish, out loud</p><div class="prompt">' + esc(w[1]) + '</div>') +
       '<div class="reveal-area" hidden><div class="answer-es">' + (dir === "recognize" ? esc(w[1]) : esc(w[0]) + ' ' + sayBtn(w[0])) + '</div>' +
       '<div class="exline"><span class="es">' + esc(w[2]) + '</span> ' + sayBtn(w[2]) + '<br><i>' + esc(w[3]) + '</i></div></div>' +
       '<div class="toolbar tight"><button class="btn primary show" type="button">Show</button>' +
       '<span class="grades" hidden><button class="btn g0" type="button">Again</button><button class="btn primary g1" type="button">Got it</button><button class="btn g2" type="button">Easy</button></span></div></div>';
     if(dir === "recognize") Speech.say(w[0]);
-    else micCheck($(".micbox", box), w[0], reveal);
     $(".show", box).addEventListener("click", reveal);
     [0, 1, 2].forEach(function(g){ $(".g" + g, box).addEventListener("click", function(){ grade(g); }); });
   }
@@ -121,10 +120,9 @@ function newWordsRunner(box, done){
     box.innerHTML = '<div class="say meet card-corners">' + CORNERS + '<div class="qnum">' + (k + 1) + ' of ' + ids.length + ' · ' + esc(WORD_SETS[Math.floor(ids[k] / 10)]) + '</div>' +
       '<div class="prompt es">' + esc(w[0]) + ' ' + sayBtn(w[0]) + '</div><div class="meaning">' + esc(w[1]) + '</div>' +
       '<div class="exline"><span class="es">' + esc(w[2]) + '</span> ' + sayBtn(w[2]) + '<br><i>' + esc(w[3]) + '</i></div>' +
-      '<p class="prompt-lab">Now say the sentence</p><div class="micbox"></div>' +
+      '<p class="prompt-lab">Now say the sentence out loud</p>' +
       '<div class="toolbar tight"><button class="btn back" type="button"' + (k ? "" : " disabled") + '>&lsaquo; Back</button><button class="btn primary next" type="button">Next &rsaquo;</button></div></div>';
     Speech.say(w[0]);
-    micCheck($(".micbox", box), w[2]);
     $(".next", box).addEventListener("click", function(){ k++; show(); });
     $(".back", box).addEventListener("click", function(){ if(k){ k--; show(); } });
   }
@@ -159,11 +157,10 @@ function runDrill(box, items, done){
       '<div class="prompt">' + esc(it.en) + '</div>' +
       '<input class="answer" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" lang="es" aria-label="Your answer" placeholder="type the Spanish">' +
       '<div class="keys" aria-label="Accents">' + ["á","é","í","ó","ú","ñ","ü"].map(function(c){ return '<button type="button" class="ins" data-c="' + c + '">' + c + '</button>'; }).join("") + '</div>' +
-      '<div class="micbox"></div><div class="feedback" aria-live="polite"></div>' +
+      '<div class="feedback" aria-live="polite"></div>' +
       '<div class="toolbar tight"><button class="btn primary check" type="button">Check</button><button class="btn primary next" type="button" hidden>Next &rsaquo;</button></div></div>';
     var inp = $(".answer", box);
     $$(".ins", box).forEach(function(b){ b.addEventListener("click", function(){ var s = inp.selectionStart || inp.value.length; inp.value = inp.value.slice(0, s) + b.getAttribute("data-c") + inp.value.slice(inp.selectionEnd || s); inp.focus(); inp.setSelectionRange(s + 1, s + 1); }); });
-    micCheck($(".micbox", box), it.answer, function(){ if(!checked){ inp.value = it.answer; check(); } });
     $(".check", box).addEventListener("click", check);
     $(".next", box).addEventListener("click", function(){ i++; show(); });
     inp.addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); e.stopPropagation(); if(checked){ i++; show(); } else check(); } });
@@ -172,7 +169,7 @@ function runDrill(box, items, done){
   function check(){
     if(checked) return;
     var it = items[i], inp = $(".answer", box), r = checkTyped(inp.value, it.answer), fb = $(".feedback", box);
-    if(r === "empty"){ fb.innerHTML = "Type it, or tap <b>Say it</b>."; return; }
+    if(r === "empty"){ fb.innerHTML = "Type it first."; return; }
     checked = true;
     if(r === "right" || r === "accent"){ right++; inp.classList.add("ok"); fb.innerHTML = "<b>Right.</b> " + (r === "accent" ? "Watch the accent: " : "") + '<span class="es">' + esc(it.answer) + '</span> ' + sayBtn(it.answer); }
     else { misses.push(it); inp.classList.add("bad"); fb.innerHTML = "<b>Not this one.</b> It’s " + '<span class="es">' + esc(it.answer) + '</span> ' + sayBtn(it.answer) + '<span class="why">' + esc(it.v.why) + '</span>'; }
@@ -271,12 +268,11 @@ function renderShadow(){
     box.innerHTML = '<div class="say card-corners">' + CORNERS + '<div class="qnum">' + (i + 1) + ' of ' + items.length + '</div>' +
       '<div class="prompt es echo' + (hide ? " veiled" : "") + '">' + esc(it.es) + '</div><div class="meaning">' + esc(it.en) + '</div>' +
       '<div class="toolbar tight"><button class="btn play" type="button">Play</button><button class="btn slow" type="button">Slower</button>' + (hide ? '<button class="btn peek" type="button">Show text</button>' : '') + '</div>' +
-      '<div class="micbox"></div><div class="toolbar tight"><button class="btn primary next" type="button">Next &rsaquo;</button></div></div>';
+      '<div class="toolbar tight"><button class="btn primary next" type="button">Next &rsaquo;</button></div></div>';
     Speech.say(it.es);
     $(".play", box).addEventListener("click", function(){ Speech.say(it.es); });
     $(".slow", box).addEventListener("click", function(){ Speech.say(it.es, true); });
     if(hide) $(".peek", box).addEventListener("click", function(){ $(".echo", box).classList.remove("veiled"); });
-    micCheck($(".micbox", box), it.es, function(){ $(".echo", box).classList.remove("veiled"); });
     $(".next", box).addEventListener("click", function(){ i++; show(); });
   }
   segWire($("#shFrom"), "data-from", start);
@@ -306,12 +302,11 @@ function playDialogue(k, me){
     }
     var l = d.lines[n], mine = l[0] === me;
     box.innerHTML = '<div class="talk card-corners">' + CORNERS + '<h3>' + esc(d.title) + ' <span class="swh">' + esc(d.where) + '</span></h3>' + past + line(l, mine, !mine) +
-      (mine ? '<div class="micbox"></div><div class="toolbar tight"><button class="btn show" type="button">Show my line</button><button class="btn primary next" type="button" hidden>Next &rsaquo;</button></div>'
+      (mine ? '<div class="toolbar tight"><button class="btn show" type="button">Show my line</button><button class="btn primary next" type="button" hidden>Next &rsaquo;</button></div>'
             : '<div class="toolbar tight"><button class="btn replay" type="button">Hear again</button><button class="btn primary next" type="button">Your turn &rsaquo;</button></div>') + '</div>';
     if(!mine){ Speech.say(l[1]); $(".replay", box).addEventListener("click", function(){ Speech.say(l[1]); }); }
     else {
       var reveal = function(){ var last = $$(".ln", box).pop(); last.outerHTML = line(l, true, true); $(".show", box).hidden = true; $(".next", box).hidden = false; Speech.say(l[1]); };
-      micCheck($(".micbox", box), l[1], reveal);
       $(".show", box).addEventListener("click", reveal);
     }
     $(".next", box).addEventListener("click", function(){ n++; draw(); });

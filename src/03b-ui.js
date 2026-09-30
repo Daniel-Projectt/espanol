@@ -4,7 +4,7 @@ if(typeof window === "undefined"){
     SURVIVAL:SURVIVAL, SURVIVAL_GROUPS:SURVIVAL_GROUPS, BUILDERS:BUILDERS, CONNECTORS:CONNECTORS, CONNECTOR_GROUPS:CONNECTOR_GROUPS,
     DIALOGUES:DIALOGUES, LESSONS:LESSONS, DRILL_VERBS:DRILL_VERBS, TENSE_LADDER:TENSE_LADDER,
     conjugate:conjugate, irregularMask:irregularMask, isIrregularIn:isIrregularIn, verbByInf:verbByInf, englishFor:englishFor,
-    fold:fold, words:words, speechScore:speechScore, bestScore:bestScore, checkTyped:checkTyped, PASS:PASS,
+    fold:fold, words:words, checkTyped:checkTyped, speechText:speechText, audioKey:audioKey, spokenLines:spokenLines,
     srsGrade:srsGrade, srsIntroduce:srsIntroduce, genderize:genderize, srsDue:srsDue, srsAll:srsAll, learnedIndexes:learnedIndexes, cardDirection:cardDirection,
     todaysNew:todaysNew, markDone:markDone, dayLog:dayLog, streak:streak, verbOfDay:verbOfDay, startDay:startDay, save:save, load:load,
     drillItem:drillItem, drillSet:drillSet, speakPool:speakPool, todaysSpeaking:todaysSpeaking, buildPrompts:buildPrompts,
@@ -24,55 +24,58 @@ function sayBtn(text, label){
 function es(text){ return '<span class="es">' + esc(text) + '</span>'; }
 
 /* ================================================================ SPEECH
-   Text-to-speech and speech recognition are built into phones: no server, no key.
-   Recognition works in Chrome (Android, desktop) and Safari (iPhone); where it doesn't,
-   every exercise falls back to "say it, then check yourself".                            */
+   Every Spanish line is recorded once with a natural ElevenLabs voice (tools/record.py) and
+   shipped as a small mp3 in audio/, named by audioKey(text). Nothing is generated while she
+   uses the app, so it costs nothing and works offline. A line without a recording falls
+   back to the phone's own voice. No microphone anywhere: she speaks, then checks herself. */
+var AUDIO_SET = {};
+(typeof AUDIO_KEYS === "string" ? AUDIO_KEYS : "").split(" ").forEach(function(k){ if(k) AUDIO_SET[k] = 1; });
 var Speech = {
   rate: +load("rate", 0.9),
   lang: load("lang", "es-MX"),
   voices: [],
+  playing: null,
   pickVoice: function(){
     var vs = Speech.voices, lang = Speech.lang.toLowerCase(), fam = lang.slice(0, 2);
     var exact = vs.filter(function(v){ return v.lang.toLowerCase().replace("_", "-") === lang; });
     var region = lang === "es-mx" ? vs.filter(function(v){ return /^es[-_](us|419|mx|co|ar|cl|pe)/i.test(v.lang); }) : [];
     var any = vs.filter(function(v){ return v.lang.toLowerCase().indexOf(fam) === 0; });
     var list = exact.length ? exact : region.length ? region : any;
-    /* prefer the nicer voices when a device has several */
     list.sort(function(a, b){ return (/google|premium|enhanced|natural|paulina|m[oó]nica|sabina|jorge/i.test(b.name) ? 1 : 0) - (/google|premium|enhanced|natural|paulina|m[oó]nica|sabina|jorge/i.test(a.name) ? 1 : 0); });
     return list[0] || null;
   },
   canSpeak: function(){ return "speechSynthesis" in window; },
-  canListen: function(){ return !!(window.SpeechRecognition || window.webkitSpeechRecognition); },
-  clean: function(t){ return String(t).replace(/—/g, " ").replace(/…-ando/g, "…").replace(/\s\/\s/g, ", ").replace(/[“”]/g, ""); },
+  hasRecording: function(text){ return !!AUDIO_SET[audioKey(speechText(text))]; },
+  stop: function(){
+    if(Speech.playing){ try{ Speech.playing.pause(); }catch(e){} Speech.playing = null; }
+    if(Speech.canSpeak()) try{ window.speechSynthesis.cancel(); }catch(e){}
+  },
   say: function(text, slow){
+    var t = speechText(text), k = audioKey(t);
+    Speech.stop();
+    if(AUDIO_SET[k] && typeof window.Audio === "function"){
+      try{
+        var a = new window.Audio("audio/" + k + ".mp3");
+        a.playbackRate = (Speech.rate / 0.9) * (slow ? 0.75 : 1);
+        a.preservesPitch = true;
+        Speech.playing = a;
+        var p = a.play();
+        if(p && p.catch) p.catch(function(){ Speech.device(t, slow); });   /* offline and not cached yet */
+        return;
+      }catch(e){}
+    }
+    Speech.device(t, slow);
+  },
+  device: function(t, slow){
     if(!Speech.canSpeak()) return;
     try{
-      window.speechSynthesis.cancel();
-      var u = new window.SpeechSynthesisUtterance(Speech.clean(text));
+      var u = new window.SpeechSynthesisUtterance(t);
       var v = Speech.pickVoice();
       u.lang = v ? v.lang : Speech.lang;
       if(v) u.voice = v;
       u.rate = Speech.rate * (slow ? 0.72 : 1);
       window.speechSynthesis.speak(u);
     }catch(e){}
-  },
-  listening: null,
-  listen: function(done){
-    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if(!SR){ done(null, "unsupported"); return; }
-    if(Speech.listening){ try{ Speech.listening.abort(); }catch(e){} }
-    var r = new SR(), got = false;
-    r.lang = Speech.lang; r.interimResults = false; r.maxAlternatives = 5; r.continuous = false;
-    r.onresult = function(ev){
-      got = true;
-      var res = ev.results[0], alts = [];
-      for(var i = 0; i < res.length; i++) alts.push(res[i].transcript);
-      done(alts);
-    };
-    r.onerror = function(ev){ if(!got){ got = true; done(null, ev.error || "error"); } };
-    r.onend = function(){ Speech.listening = null; if(!got){ got = true; done([], "nothing"); } };
-    Speech.listening = r;
-    try{ if(Speech.canSpeak()) window.speechSynthesis.cancel(); r.start(); }catch(e){ got = true; done(null, "error"); }
   }
 };
 function loadVoices(){
@@ -80,35 +83,11 @@ function loadVoices(){
   Speech.voices = window.speechSynthesis.getVoices() || [];
   var note = $("#voiceNote");
   if(note){
-    if(!Speech.voices.length) note.textContent = "";
-    else if(!Speech.voices.some(function(v){ return /^es/i.test(v.lang); }))
+    var recorded = Object.keys(AUDIO_SET).length > 0;
+    if(!recorded && Speech.voices.length && !Speech.voices.some(function(v){ return /^es/i.test(v.lang); }))
       note.textContent = "This device has no Spanish voice installed yet. Add one in your phone’s settings (Accessibility → Spoken Content → Voices on iPhone; Text-to-speech on Android) and the app will use it.";
     else note.textContent = "";
   }
-}
-
-/* the microphone check: say it, see which words came through */
-function micCheck(box, target, onPass){
-  if(!Speech.canListen()){ box.innerHTML = ""; return; }
-  box.innerHTML = '<button class="btn mic" type="button"><svg width="16" height="16"><use href="#i-mic"/></svg> Say it</button><div class="heard" aria-live="polite"></div>';
-  var btn = $(".mic", box), out = $(".heard", box);
-  btn.addEventListener("click", function(){
-    btn.classList.add("on"); btn.disabled = true; out.innerHTML = '<span class="listening">Listening…</span>';
-    Speech.listen(function(alts, err){
-      btn.classList.remove("on"); btn.disabled = false;
-      if(!alts){
-        out.innerHTML = '<span class="miss">' + (err === "not-allowed" || err === "service-not-allowed" ? "The microphone is blocked. Allow it for this site, or say it aloud and check yourself." : "The microphone isn’t working here. Say it aloud and check yourself.") + '</span>';
-        return;
-      }
-      if(!alts.length){ out.innerHTML = '<span class="miss">I didn’t catch that. Tap and try again.</span>'; return; }
-      var s = bestScore(alts, target), tw = target.replace(/[¿¡]/g, "").split(/\s+/).filter(function(w){ return words(w).length; });
-      var marked = tw.map(function(w, i){ return '<span class="' + (s.marks[i] ? "hit" : "gap") + '">' + esc(w) + '</span>'; }).join(" ");
-      var pass = s.ratio >= PASS;
-      out.innerHTML = '<div class="hv ' + (pass ? "ok" : "no") + '">' + (pass ? "Muy bien." : s.ratio >= 0.5 ? "Close. The faded words didn’t come through." : "Not this one. Listen and try again.") + '</div>' +
-        '<div class="marked">' + marked + '</div><div class="said">I heard: “' + esc(s.heard) + '”</div>';
-      if(pass && onPass) onPass();
-    });
-  });
 }
 
 /* ================================================================ widgets */
@@ -168,11 +147,9 @@ function makeSayRunner(root, getItems, onFinish){
       '<div class="qnum">' + (i + 1) + ' of ' + items.length + '</div>' +
       '<p class="prompt-lab">Say in Spanish</p><div class="prompt">' + esc(it.en) + '</div>' +
       (it.hint ? '<div class="phint">Start with: <i>' + esc(it.hint) + '</i></div>' : '') +
-      '<div class="micbox"></div>' +
       '<div class="reveal-area" hidden><div class="answer-es">' + esc(it.es) + ' ' + sayBtn(it.es) + ' ' + sayBtn(it.es, "Hear it slowly").replace('data-say=', 'data-slow="1" data-say=') + '</div></div>' +
       '<div class="toolbar tight"><button class="btn show" type="button">Show the Spanish</button>' +
       '<button class="btn miss" type="button" hidden>Not yet</button><button class="btn primary gotit" type="button" hidden>I said it</button></div></div>';
-    micCheck($(".micbox", root), it.es, function(){ reveal(); });
     $(".show", root).addEventListener("click", reveal);
     $(".gotit", root).addEventListener("click", function(){ got++; i++; show(); });
     $(".miss", root).addEventListener("click", function(){ items.push(items[i]); i++; show(); });

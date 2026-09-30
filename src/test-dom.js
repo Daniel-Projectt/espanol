@@ -1,5 +1,5 @@
-/* Clicks through the real page in a simulated browser (jsdom), with a fake voice and a fake
-   microphone.  Usage: node test-dom.js <path-to-node_modules-containing-jsdom>             */
+/* Clicks through the real page in a simulated browser (jsdom), with a fake voice and fake
+   recordings.  Usage: node test-dom.js <path-to-node_modules-containing-jsdom>             */
 const path = require('path');
 const fs = require('fs');
 const vm = require('vm');
@@ -18,11 +18,11 @@ function ok(c, label, d) { checks++; if (!c) { fails++; console.log('  FAIL  ' +
 function head(t) { console.log('\n== ' + t + ' =='); }
 
 function makePage(opts) {
-  const errors = [], spoken = [];
+  const errors = [], spoken = [], played = [];
   const vc = new VirtualConsole();
   vc.on('jsdomError', e => errors.push(e.message + (e.detail ? ' | ' + e.detail : '')));
   vc.on('error', e => errors.push(String(e)));
-  const dom = new JSDOM(html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'https://example.test/', virtualConsole: vc,
+  const dom = new JSDOM(opts.html || html, { runScripts: 'dangerously', pretendToBeVisual: true, url: 'https://example.test/', virtualConsole: vc,
     beforeParse(w) {
       w.scrollTo = () => {};
       w.Element.prototype.scrollIntoView = function () {};
@@ -30,20 +30,13 @@ function makePage(opts) {
       if (opts.pre) for (const k of Object.keys(opts.pre)) w.localStorage.setItem(k, opts.pre[k]);
       w.SpeechSynthesisUtterance = function (t) { this.text = t; };
       w.speechSynthesis = { speak: u => spoken.push(u), cancel: () => {}, getVoices: () => opts.voices || [{ lang: 'es-ES', name: 'Monica' }, { lang: 'es-MX', name: 'Paulina' }, { lang: 'en-US', name: 'Samantha' }] };
-      if (opts.mic) {
-        w.webkitSpeechRecognition = function () {
-          const r = this;
-          r.start = () => { r.startedWith = r.lang; const h = w.__heard; if (h === 'deny') { r.onerror({ error: 'not-allowed' }); r.onend(); return; } if (!h) { r.onend(); return; }
-            const res = h.map(t => ({ transcript: t })); r.onresult({ results: [res] }); r.onend(); };
-          r.abort = () => {};
-          w.__rec = r;
-        };
-      }
+      w.webkitSpeechRecognition = function () { w.__micUsed = true; this.start = () => {}; };
+      w.Audio = function (src) { this.src = src; this.paused = true; this.play = () => { this.paused = false; played.push(this); return Promise.resolve(); }; this.pause = () => { this.paused = true; }; };
     } });
-  return { dom, w: dom.window, d: dom.window.document, errors, spoken };
+  return { dom, w: dom.window, d: dom.window.document, errors, spoken, played };
 }
 
-let P = makePage({ mic: true });
+let P = makePage({});
 let w = P.w, d = P.d;
 const $ = (s, r) => (r || d).querySelector(s), $$ = (s, r) => Array.from((r || d).querySelectorAll(s));
 const visible = el => { for (let n = el; n && n !== d; n = n.parentNode) if (n.hidden) return false; return true; };
@@ -89,19 +82,7 @@ click($('[data-step="new"]'));
 ok(/hola/.test($('#stepRoot .prompt').textContent) && /hello/.test($('#stepRoot .meaning').textContent), 'the first word, with its meaning');
 ok(lastSaid() === 'hola', 'and it is spoken', lastSaid());
 ok(P.spoken[P.spoken.length - 1].voice && P.spoken[P.spoken.length - 1].voice.lang === 'es-MX', 'in a Latin-American voice');
-w.__heard = ['hola cómo estás'];
-click($('#stepRoot .mic'));
-ok(/Muy bien/.test($('#stepRoot .heard').textContent), 'saying the sentence right: “Muy bien.”', $('#stepRoot .heard').textContent);
-ok(w.__rec.startedWith === 'es-MX', 'the microphone listens for Spanish');
-w.__heard = ['hola'];
-click($('#stepRoot .mic'));
-ok(/Close|Not this one/.test($('#stepRoot .heard').textContent) && $$('#stepRoot .gap').length >= 1, 'half a sentence: the missing words are marked', $('#stepRoot .heard').textContent);
-w.__heard = 'deny';
-click($('#stepRoot .mic'));
-ok(/blocked/.test($('#stepRoot .heard').textContent), 'a blocked microphone says so');
-w.__heard = null;
-click($('#stepRoot .mic'));
-ok(/didn’t catch/.test($('#stepRoot .heard').textContent), 'silence: try again');
+ok(/say the sentence out loud/i.test($('#stepRoot').textContent) && !$('#stepRoot .mic'), 'she is asked to say it out loud: no microphone button');
 click($('#stepRoot .next'));
 ok(/adiós/.test($('#stepRoot .prompt').textContent), 'next word');
 click($('#stepRoot .back'));
@@ -188,9 +169,8 @@ click($('#shBox .slow')); ok(lastSaid() === echoText && P.spoken[P.spoken.length
 click($('#shHide'));
 $('#shHide').checked = true; $('#shHide').dispatchEvent(new w.Event('change'));
 ok($('#shBox .echo').classList.contains('veiled') && $('#shBox .peek'), 'the text can be hidden');
-w.__heard = [echoText];
-click($('#shBox .mic'));
-ok(!$('#shBox .echo').classList.contains('veiled') && /Muy bien/.test($('#shBox').textContent), 'echoing it right uncovers it');
+click($('#shBox .peek'));
+ok(!$('#shBox .echo').classList.contains('veiled'), 'show text uncovers it');
 $('#shHide').checked = false; $('#shHide').dispatchEvent(new w.Event('change'));
 mode('speak', 'talk');
 ok($$('.scene').length === 10, 'ten conversations to choose');
@@ -198,9 +178,8 @@ click($('.scene[data-d="cafe"]'));
 ok(/Them/.test($('#talkBox').textContent) && lastSaid() === '¿Qué le sirvo?'.replace(/.*/, D.DIALOGUES[1].lines[0][1]), 'the café opens with their line, spoken', lastSaid());
 click($('#talkBox .next'));
 ok(/Say: Good morning\. I’d like a coffee/.test($('#talkBox').textContent), 'your turn: the English cue');
-w.__heard = ['buenos días quisiera un café con leche por favor'];
-click($('#talkBox .mic'));
-ok(/Quisiera un café con leche/.test($('#talkBox .ln.me:last-of-type, #talkBox .ln.me').textContent) || /Quisiera/.test($('#talkBox').textContent), 'saying it reveals your line');
+click($('#talkBox .show'));
+ok(/Quisiera un café con leche/.test($('#talkBox').textContent) && lastSaid() === D.DIALOGUES[1].lines[1][1], 'show my line reveals it and plays it');
 guard = 0;
 while ($('#talkBox .next') && guard++ < 30) { const s = $('#talkBox .show'); if (s && !s.hidden) click(s); click($('#talkBox .next')); }
 ok($('#talkBox .swap') && $$('#talkBox .ln').length === 8, 'the whole scene, eight lines', $$('#talkBox .ln').length);
@@ -306,21 +285,39 @@ ok(store('newPerDay') === 8, 'new words a day saved');
 ok(P.errors.length === 0, 'no errors all the way through', P.errors.join(' | '));
 
 head('speaking as a man');
-P = makePage({ mic: true, pre: { 'es.gender': '"m"' } }); w = P.w; d = P.d;
+P = makePage({ pre: { 'es.gender': '"m"' } }); w = P.w; d = P.d;
 ok($('#setGender').value === 'm', 'the setting shows it');
 topic('words');
 ok(/Estoy cansado hoy\./.test($('#wordsList').textContent) && !/cansada/.test($('#wordsList').textContent), 'sentences use cansado');
 ok(P.errors.length === 0, 'no errors', P.errors.join(' | '));
 
-head('no microphone, no Spanish voice');
-P = makePage({ mic: false, voices: [{ lang: 'en-US', name: 'Samantha' }] }); w = P.w; d = P.d;
-ok(P.errors.length === 0, 'loads', P.errors.join(' | '));
+head('natural recordings');
+ok(!w.__micUsed && !P.w.__micUsed, 'the microphone is never touched');
+const rec = ['hola', 'Hola, ¿cómo estás?', 'voy'].map(t => { let h = 0x811c9dc5; for (let k = 0; k < t.length; k++) { h ^= t.charCodeAt(k); h = Math.imul(h, 0x01000193) >>> 0; } return ('0000000' + h.toString(16)).slice(-8); });
+P = makePage({ html: html.replace('var AUDIO_KEYS = "";', 'var AUDIO_KEYS = "' + rec.join(' ') + '";') }); w = P.w; d = P.d;
+ok(P.errors.length === 0, 'loads with recordings', P.errors.join(' | '));
 click($('[data-step="new"]'));
-ok(!$('#stepRoot .mic') && $('#stepRoot .next'), 'no microphone button, lessons still work');
+ok(P.played.length === 1 && P.played[0].src === 'audio/' + rec[0] + '.mp3' && P.spoken.length === 0, 'a recorded word plays its recording, not the phone voice', P.played.map(a => a.src).join());
+ok(Math.abs(P.played[0].playbackRate - 1) < 1e-9, 'at natural speed');
+click($('#stepRoot [data-say]'));
+ok(P.played.length === 2 && P.played[0].paused, 'a new line stops the one playing');
+click($('#stepRoot .next'));
+ok(P.spoken.length === 1 && P.spoken[0].text === 'adiós', 'a line with no recording falls back to the phone voice');
+topic('verbs');
+click($('#vtOut [data-say="voy"]'));
+ok(P.played[P.played.length - 1].src === 'audio/' + rec[2] + '.mp3', 'verb forms play their recordings');
 topic('speak');
-ok(!$('#sayRoot .mic') && $('#sayRoot .show'), 'say it falls back to “show the Spanish”');
-ok(/no Spanish voice/.test($('#voiceNote').textContent), 'the page explains how to add a Spanish voice');
-ok(P.errors.length === 0, 'no errors without the microphone', P.errors.join(' | '));
+click($('#sayFrom [data-from="survival"]'));
+click($('#sayRoot [data-slow]'));
+ok(P.spoken[P.spoken.length - 1].rate < 0.8, 'the slow button slows a line with no recording too');
+$('#setRate').value = '0.75'; $('#setRate').dispatchEvent(new w.Event('change'));
+ok(Math.abs(P.played[P.played.length - 1].playbackRate - 0.75 / 0.9) < 1e-9, 'the speed setting slows the recording', P.played[P.played.length - 1].playbackRate);
+
+head('a phone without a Spanish voice');
+P = makePage({ voices: [{ lang: 'en-US', name: 'Samantha' }] }); w = P.w; d = P.d;
+ok(P.errors.length === 0, 'loads', P.errors.join(' | '));
+ok(/no Spanish voice/.test($('#voiceNote').textContent), 'with no recordings yet, the page explains how to add a Spanish voice');
+ok(P.errors.length === 0, 'no errors', P.errors.join(' | '));
 
 console.log('\n' + (fails === 0 ? 'ALL ' + checks + ' DOM CHECKS PASSED' : fails + ' FAILURES out of ' + checks + ' DOM checks'));
 process.exit(fails ? 1 : 0);
