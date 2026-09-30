@@ -28,11 +28,12 @@ function es(text){ return '<span class="es">' + esc(text) + '</span>'; }
    shipped as a small mp3 in audio/, named by audioKey(text). Nothing is generated while she
    uses the app, so it costs nothing and works offline. A line without a recording falls
    back to the phone's own voice. No microphone anywhere: she speaks, then checks herself. */
-var AUDIO_SET = {};
+var AUDIO_SET = {}, VOICES = typeof AUDIO_VOICES === "object" && AUDIO_VOICES ? AUDIO_VOICES : [];
 (typeof AUDIO_KEYS === "string" ? AUDIO_KEYS : "").split(" ").forEach(function(k){ if(k) AUDIO_SET[k] = 1; });
 var Speech = {
   rate: +load("rate", 0.9),
-  lang: load("lang", "es-MX"),
+  voice: load("voice", VOICES.length ? VOICES[0].id : "phone-mx"),
+  lang: "es-MX",
   voices: [],
   playing: null,
   pickVoice: function(){
@@ -45,6 +46,13 @@ var Speech = {
     return list[0] || null;
   },
   canSpeak: function(){ return "speechSynthesis" in window; },
+  recorded: function(){ return VOICES.some(function(v){ return v.id === Speech.voice; }); },
+  setVoice: function(id){
+    var v = VOICES.filter(function(x){ return x.id === id; })[0];
+    if(!v && !/^phone-(mx|es)$/.test(id)) id = VOICES.length ? VOICES[0].id : "phone-mx";
+    Speech.voice = id;
+    Speech.lang = v ? v.lang : id === "phone-es" ? "es-ES" : "es-MX";
+  },
   hasRecording: function(text){ return !!AUDIO_SET[audioKey(speechText(text))]; },
   stop: function(){
     if(Speech.playing){ try{ Speech.playing.pause(); }catch(e){} Speech.playing = null; }
@@ -53,9 +61,9 @@ var Speech = {
   say: function(text, slow){
     var t = speechText(text), k = audioKey(t);
     Speech.stop();
-    if(AUDIO_SET[k] && typeof window.Audio === "function"){
+    if(AUDIO_SET[k] && Speech.recorded() && typeof window.Audio === "function"){
       try{
-        var a = new window.Audio("audio/" + k + ".mp3");
+        var a = new window.Audio("audio/" + Speech.voice + "/" + k + ".mp3");
         a.playbackRate = (Speech.rate / 0.9) * (slow ? 0.75 : 1);
         a.preservesPitch = true;
         Speech.playing = a;
@@ -78,12 +86,13 @@ var Speech = {
     }catch(e){}
   }
 };
+Speech.setVoice(Speech.voice);
 function loadVoices(){
   if(!Speech.canSpeak()) return;
   Speech.voices = window.speechSynthesis.getVoices() || [];
   var note = $("#voiceNote");
   if(note){
-    var recorded = Object.keys(AUDIO_SET).length > 0;
+    var recorded = Speech.recorded() && Object.keys(AUDIO_SET).length > 0;
     if(!recorded && Speech.voices.length && !Speech.voices.some(function(v){ return /^es/i.test(v.lang); }))
       note.textContent = "This device has no Spanish voice installed yet. Add one in your phone’s settings (Accessibility → Spoken Content → Voices on iPhone; Text-to-speech on Android) and the app will use it.";
     else note.textContent = "";

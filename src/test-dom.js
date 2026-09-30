@@ -5,7 +5,10 @@ const fs = require('fs');
 const vm = require('vm');
 const NM = process.argv[2];
 const { JSDOM, VirtualConsole } = require(path.join(NM, 'jsdom'));
-const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+const built = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+/* most checks run on the phone voice (no recordings); the recordings get their own section */
+const TWO = '[{"id":"mx-f","label":"Mexico · woman","lang":"es-MX","credit":"Piper es_MX “claude” (Apache-2.0)"},{"id":"es-f","label":"Spain · woman","lang":"es-ES","credit":"Piper es_ES “sharvard” (CC BY 3.0)"}]';
+const html = built.replace(/var AUDIO_KEYS = "[^"]*";/, 'var AUDIO_KEYS = "";').replace(/var AUDIO_VOICES = [^\n]*;/, 'var AUDIO_VOICES = ' + TWO + ';');
 
 /* the data, straight from the sources, to know the right answers */
 const D = {};
@@ -75,7 +78,8 @@ ok(/Día 1/.test($('.dayhead').textContent) && /Start your streak/.test($('.dayh
 ok($('[data-step="review"]').disabled && /Starts tomorrow/.test($$('.step')[0].textContent), 'nothing to review on day one');
 ok(/hola · adiós · sí · no · por favor/.test($$('.step')[1].textContent), 'the first five words are listed', $$('.step')[1].textContent);
 ok(/ser/.test($$('.step')[3].textContent) && /Present/.test($$('.step')[3].textContent), 'verb of the day: ser, present');
-ok(/Latin America/.test($('#setLang').selectedOptions[0].textContent), 'Latin-American accent by default');
+ok($('#setVoice').value === 'mx-f' && $$('#setVoice option').length === 4, 'voice picker: the recorded voices plus the phone voice, Mexico first', $$('#setVoice option').map(o => o.textContent).join(' | '));
+ok(/Piper es_MX “claude”/.test($('#voiceCredit').textContent) && /CC BY 3\.0/.test($('#voiceCredit').textContent), 'the voices are credited');
 
 head('new words');
 click($('[data-step="new"]'));
@@ -278,7 +282,7 @@ key('Enter'); ok(/Question 2 of 10/.test($('#gMixedBox').textContent), 'enter mo
 head('settings');
 $('#setRate').value = '0.75'; $('#setRate').dispatchEvent(new w.Event('change'));
 ok(store('rate') === 0.75 && P.spoken[P.spoken.length - 1].rate === 0.75, 'slower voice saved and heard');
-$('#setLang').value = 'es-ES'; $('#setLang').dispatchEvent(new w.Event('change'));
+$('#setVoice').value = 'phone-es'; $('#setVoice').dispatchEvent(new w.Event('change'));
 ok(P.spoken[P.spoken.length - 1].voice.lang === 'es-ES', 'Spain accent switches voice');
 $('#setNew').value = '8'; $('#setNew').dispatchEvent(new w.Event('change'));
 ok(store('newPerDay') === 8, 'new words a day saved');
@@ -297,7 +301,7 @@ const rec = ['hola', 'Hola, ¿cómo estás?', 'voy'].map(t => { let h = 0x811c9d
 P = makePage({ html: html.replace('var AUDIO_KEYS = "";', 'var AUDIO_KEYS = "' + rec.join(' ') + '";') }); w = P.w; d = P.d;
 ok(P.errors.length === 0, 'loads with recordings', P.errors.join(' | '));
 click($('[data-step="new"]'));
-ok(P.played.length === 1 && P.played[0].src === 'audio/' + rec[0] + '.mp3' && P.spoken.length === 0, 'a recorded word plays its recording, not the phone voice', P.played.map(a => a.src).join());
+ok(P.played.length === 1 && P.played[0].src === 'audio/mx-f/' + rec[0] + '.mp3' && P.spoken.length === 0, 'a recorded word plays its recording, not the phone voice', P.played.map(a => a.src).join());
 ok(Math.abs(P.played[0].playbackRate - 1) < 1e-9, 'at natural speed');
 click($('#stepRoot [data-say]'));
 ok(P.played.length === 2 && P.played[0].paused, 'a new line stops the one playing');
@@ -305,13 +309,27 @@ click($('#stepRoot .next'));
 ok(P.spoken.length === 1 && P.spoken[0].text === 'adiós', 'a line with no recording falls back to the phone voice');
 topic('verbs');
 click($('#vtOut [data-say="voy"]'));
-ok(P.played[P.played.length - 1].src === 'audio/' + rec[2] + '.mp3', 'verb forms play their recordings');
+ok(P.played[P.played.length - 1].src === 'audio/mx-f/' + rec[2] + '.mp3', 'verb forms play their recordings');
+$('#setVoice').value = 'es-f'; $('#setVoice').dispatchEvent(new w.Event('change'));
+ok(P.played[P.played.length - 1].src === 'audio/es-f/' + rec[1] + '.mp3', 'choosing Spain · woman plays her recordings (with a sample)', P.played[P.played.length - 1].src);
+ok(store('voice') === 'es-f', 'the voice choice is remembered');
+$('#setVoice').value = 'phone-mx'; $('#setVoice').dispatchEvent(new w.Event('change'));
+const before = P.played.length; click($('#vtOut [data-say="voy"]'));
+ok(P.played.length === before && P.spoken[P.spoken.length - 1].text === 'voy', 'the phone voice option skips the recordings');
+$('#setVoice').value = 'mx-f'; $('#setVoice').dispatchEvent(new w.Event('change'));
+topic('verbs');
 topic('speak');
 click($('#sayFrom [data-from="survival"]'));
 click($('#sayRoot [data-slow]'));
 ok(P.spoken[P.spoken.length - 1].rate < 0.8, 'the slow button slows a line with no recording too');
 $('#setRate').value = '0.75'; $('#setRate').dispatchEvent(new w.Event('change'));
 ok(Math.abs(P.played[P.played.length - 1].playbackRate - 0.75 / 0.9) < 1e-9, 'the speed setting slows the recording', P.played[P.played.length - 1].playbackRate);
+
+const builtKeys = (built.match(/var AUDIO_KEYS = "([^"]*)";/) || [])[1].split(' ').filter(Boolean);
+const lineCount = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'audio', 'lines.json'), 'utf8')).length;
+ok(builtKeys.length === lineCount, 'the published page has a recording for every line', builtKeys.length + ' / ' + lineCount);
+const builtVoices = JSON.parse((built.match(/var AUDIO_VOICES = (.*);/) || [])[1] || '[]');
+ok(builtVoices.length >= 1 && builtVoices.every(v => builtKeys.every(k => fs.existsSync(path.join(__dirname, '..', 'audio', v.id, k + '.mp3')))), 'every voice offered has every recording file', builtVoices.map(v => v.id).join());
 
 head('a phone without a Spanish voice');
 P = makePage({ voices: [{ lang: 'en-US', name: 'Samantha' }] }); w = P.w; d = P.d;

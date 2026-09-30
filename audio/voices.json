@@ -1,0 +1,6 @@
+[
+  {"id": "mx-f", "label": "Mexico · woman", "lang": "es-MX", "credit": "Piper es_MX “claude” (Apache-2.0)"},
+  {"id": "mx-m", "label": "Mexico · man",   "lang": "es-MX", "credit": "Piper es_MX “ald” (Unlicense)"},
+  {"id": "es-f", "label": "Spain · woman",  "lang": "es-ES", "credit": "Piper es_ES “sharvard” (CC BY 3.0)"},
+  {"id": "es-m", "label": "Spain · man",    "lang": "es-ES", "credit": "Piper es_ES “davefx” (CC0)"}
+]

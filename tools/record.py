@@ -45,10 +45,14 @@ def request(method, path, key, body=None):
 
 
 def write_keys():
+    """src/02z-audio.js: the voices whose recordings are complete, and the lines they cover."""
     lines = json.load(open(os.path.join(AUDIO, "lines.json"), encoding="utf-8"))
-    have = [l["key"] for l in lines if os.path.exists(os.path.join(AUDIO, l["key"] + ".mp3"))]
+    voices = json.load(open(os.path.join(AUDIO, "voices.json"), encoding="utf-8"))
+    ready = [v for v in voices if all(os.path.exists(os.path.join(AUDIO, v["id"], l["key"] + ".mp3")) for l in lines)]
+    have = [l["key"] for l in lines if ready and all(os.path.exists(os.path.join(AUDIO, v["id"], l["key"] + ".mp3")) for v in ready)]
     with open(os.path.join(ROOT, "src", "02z-audio.js"), "w", encoding="utf-8", newline="\n") as f:
-        f.write("/* written by tools/record.py: the recordings that exist in audio/ (empty = use the phone voice) */\n")
+        f.write("/* written by tools/record.py: voices with a complete set of recordings, and the lines recorded */\n")
+        f.write("var AUDIO_VOICES = " + json.dumps(ready, ensure_ascii=False) + ";\n")
         f.write('var AUDIO_KEYS = "' + " ".join(have) + '";\n')
     return len(have), len(lines)
 
@@ -78,7 +82,7 @@ def main():
     lines = json.load(open(os.path.join(AUDIO, "lines.json"), encoding="utf-8"))
     for l in lines:
         assert audio_key(l["text"]) == l["key"], "recording names differ from the app: " + l["text"]
-    todo = [l for l in lines if (a.only == "all" or is_sentence(l["text"])) and not os.path.exists(os.path.join(AUDIO, l["key"] + ".mp3"))]
+    todo = [l for l in lines if (a.only == "all" or is_sentence(l["text"])) and not os.path.exists(os.path.join(AUDIO, "eleven", l["key"] + ".mp3"))]
     if a.limit: todo = todo[:a.limit]
     chars = sum(len(l["text"]) for l in todo)
     print("%d lines to record, %d characters, about %d credits on %s" % (len(todo), chars, chars * COST.get(a.model, 1), a.model))
@@ -95,8 +99,8 @@ def main():
                 try:
                     r = request("POST", "/text-to-speech/%s?output_format=mp3_22050_32" % a.voice, key, dict(body_base, text=l["text"]))
                     data = r.read()
-                    tmp = os.path.join(AUDIO, l["key"] + ".part")
-                    open(tmp, "wb").write(data); os.replace(tmp, os.path.join(AUDIO, l["key"] + ".mp3"))
+                    os.makedirs(os.path.join(AUDIO, "eleven"), exist_ok=True); tmp = os.path.join(AUDIO, "eleven", l["key"] + ".part")
+                    open(tmp, "wb").write(data); os.replace(tmp, os.path.join(AUDIO, "eleven", l["key"] + ".mp3"))
                     done += 1
                     if done % 50 == 0: print("  %d / %d" % (done, len(todo)))
                     break

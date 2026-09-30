@@ -432,13 +432,17 @@ function go(target, from){
   window.scrollTo(0, 0);
 }
 function initSettings(){
-  var r = $("#setRate"), n = $("#setNew"), l = $("#setLang"), gs = $("#setGender");
+  var r = $("#setRate"), n = $("#setNew"), l = $("#setVoice"), gs = $("#setGender");
+  l.innerHTML = VOICES.map(function(v){ return '<option value="' + esc(v.id) + '">' + esc(v.label) + '</option>'; }).join("") +
+    '<option value="phone-mx">Phone voice · Latin America</option><option value="phone-es">Phone voice · Spain</option>';
+  var credit = $("#voiceCredit");
+  if(credit) credit.textContent = VOICES.length ? "Voices: " + VOICES.map(function(v){ return v.credit; }).join(", ") + ", open source, recorded once and stored with the app." : "";
   gs.value = GENDER;
   gs.addEventListener("change", function(){ save("gender", gs.value); location.reload(); });
-  r.value = String(Speech.rate); n.value = String(newPerDay()); l.value = Speech.lang;
+  r.value = String(Speech.rate); n.value = String(newPerDay()); l.value = Speech.voice;
   r.addEventListener("change", function(){ Speech.rate = +r.value; save("rate", Speech.rate); Speech.say("Hola, ¿cómo estás?"); });
   n.addEventListener("change", function(){ save("newPerDay", +n.value); var t = load("newToday", null); if(t && !dayLog()["new"]) save("newToday", null); if(!$("#topic-today").hidden) renderToday(); });
-  l.addEventListener("change", function(){ Speech.lang = l.value; save("lang", Speech.lang); Speech.say("Hola, ¿cómo estás?"); });
+  l.addEventListener("change", function(){ Speech.setVoice(l.value); save("voice", Speech.voice); loadVoices(); Speech.say("Hola, ¿cómo estás?"); });
 }
 
 function init(){
