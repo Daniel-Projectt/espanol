@@ -1,5 +1,5 @@
 /* ================================================================ GRAMMAR
-   Twenty short lessons, ordered by how soon you need them to speak.  Each one names the
+   Twenty-two short lessons, ordered by how soon you need them to speak.  Each one names the
    chapters it comes from: EG = Bradley & Mackenzie, Spanish: An Essential Grammar (2004);
    MSG = Kattán-Ibarra & Pountain, Modern Spanish Grammar, 2nd ed. (2003).
    Each lesson: point (the one idea), body (short notes), ex (examples to hear and repeat),
@@ -145,6 +145,24 @@ var LESSONS = [
   {q:"Which is right for a place you already mentioned?", a:"El banco está en la esquina.", w:["Hay el banco en la esquina.","El banco es en la esquina.","El banco hay en la esquina."], e:"Hay presents something new; estar locates something known."},
   {q:"“You’re right” is…", a:"Tienes razón.", w:["Eres razón.","Estás razón.","Hay razón."], e:"Tener razón = to be right."}
  ]},
+{k:"saberconocer", title:"Saber or conocer", src:"EG ch. 16 · MSG ch. 44",
+ point:"Both mean “to know”. Saber is knowing a fact or how to do something. Conocer is being familiar with a person, a place or a thing.",
+ body:'<table class="tbl"><tr><th>saber: facts and skills</th><th>conocer: people, places, things</th></tr>'+
+  '<tr><td><i>Sé tu nombre.</i> I know your name.</td><td><i>Conozco a tu hermana.</i> I know your sister.</td></tr>'+
+  '<tr><td><i>No sé dónde está.</i> I don’t know where it is.</td><td><i>Conozco Madrid.</i> I know (have been to) Madrid.</td></tr>'+
+  '<tr><td><i>Sé nadar.</i> I know how to swim (no “cómo”).</td><td><i>¿Conoces este libro?</i> Are you familiar with this book?</td></tr></table>'+
+  '<ul><li>Yo forms: <b>sé</b> and <b>conozco</b>.</li>'+
+  '<li><mark>After saber</mark> comes a fact: <i>que, dónde, cuándo, si…</i> or an infinitive. <mark>After conocer</mark> comes a noun; a person takes <b>a</b>.</li>'+
+  '<li>In the past they shift: <i>supe</i> = I found out; <i>conocí</i> = I met (for the first time).</li></ul>',
+ ex:[["No sé.","I don’t know."],["¿Conoces a mi amiga Ana?","Do you know my friend Ana?"],["¿Sabes cocinar?","Do you know how to cook?"],["La conocí en la universidad.","I met her at college."]],
+ able:"choose saber for facts and skills and conocer for people and places.",
+ q:[
+  {q:"“I know your brother” is…", a:"Conozco a tu hermano.", w:["Sé a tu hermano.","Sé tu hermano.","Conozco tu hermano."], e:"A person you are acquainted with: conocer, with the personal a."},
+  {q:"“Do you know where the bank is?” is…", a:"¿Sabes dónde está el banco?", w:["¿Conoces dónde está el banco?","¿Sabes a dónde es el banco?","¿Conoces el banco dónde está?"], e:"Knowing a fact (where something is) is saber."},
+  {q:"“I know how to swim” is…", a:"Sé nadar.", w:["Sé cómo a nadar.","Conozco nadar.","Conozco cómo nadar."], e:"Saber + infinitive = know how to; no “cómo” needed."},
+  {q:"“Conocí a su esposo ayer” means…", a:"I met her husband yesterday", w:["I knew her husband yesterday","I found her husband yesterday","I knew about her husband"], e:"In the preterite, conocer means to meet for the first time."},
+  {q:"“Have you been to Mexico City?” is best…", a:"¿Conoces la Ciudad de México?", w:["¿Sabes la Ciudad de México?","¿Sabes a la Ciudad de México?","¿Conoces a la Ciudad de México?"], e:"Being familiar with a place: conocer, and places take no personal a."}
+ ]},
 {k:"questions", title:"Asking questions, and saying no", src:"EG ch. 24, 27 · MSG ch. 12, 15, 31–32",
  point:"A yes/no question is a statement with a rising voice. Question words carry an accent. “No” goes right before the verb, and double negatives are correct.",
  body:'<ul><li><i>¿Tienes tiempo?</i> Same words as a statement, voice goes up. Written with ¿ at the start.</li>'+
@@ -193,6 +211,22 @@ var LESSONS = [
   {q:"Which is also correct for “Lo quiero ver”?", a:"Quiero verlo.", w:["Quiero lo ver.","Quiero ver lo.","Lo quiero verlo."], e:"A pronoun may attach to the infinitive."},
   {q:"“Call me!” (to a friend) is…", a:"¡Llámame!", w:["¡Me llama!","¡Llama me!","¡Me llámame!"], e:"Pronouns attach to yes-commands; the accent keeps the stress."},
   {q:"“Te quiero” means…", a:"I love you", w:["You love me","I want tea","Do you want?"], e:"Te = you (object). Quiero = I want / I love."}
+ ]},
+{k:"personala", title:"The personal a", src:"EG ch. 21 · MSG ch. 25",
+ point:"When the object of a verb is a specific person (or a pet), Spanish puts a in front of it: Veo a María. It isn’t translated.",
+ body:'<ul><li><i>Veo <b>a</b> María. Llamo <b>a</b> mi mamá. Busco <b>a</b> mi hijo.</i></li>'+
+  '<li>Not for things: <i>Veo la casa. Busco las llaves.</i></li>'+
+  '<li>With el it contracts: <i>Conozco <b>al</b> doctor.</i></li>'+
+  '<li><mark>Not after tener</mark>: <i>Tengo dos hermanos.</i> And not for an unspecified person: <i>Busco un médico.</i> (any doctor) vs <i>Busco al médico.</i> (the one I know).</li>'+
+  '<li>With question words: <i>¿<b>A</b> quién llamas?</i> (Who are you calling?)</li></ul>',
+ ex:[["Voy a llamar a mi mamá.","I’m going to call my mom."],["¿Conoces a Pedro?","Do you know Pedro?"],["Veo a los niños.","I see the children."],["¿A quién buscas?","Who are you looking for?"]],
+ able:"put a before a specific person who receives the action.",
+ q:[
+  {q:"“I see Ana” is…", a:"Veo a Ana.", w:["Veo Ana.","Veo con Ana.","A veo Ana."], e:"A specific person as the object takes the personal a."},
+  {q:"“I have three sisters” is…", a:"Tengo tres hermanas.", w:["Tengo a tres hermanas.","Tengo de tres hermanas.","Tengo al tres hermanas."], e:"Tener normally takes no personal a."},
+  {q:"“I’m looking for my keys” is…", a:"Busco mis llaves.", w:["Busco a mis llaves.","Busco para mis llaves.","Busco por mis llaves."], e:"Things don’t take the personal a (and buscar already means look for)."},
+  {q:"“Who are you calling?” is…", a:"¿A quién llamas?", w:["¿Quién llamas?","¿De quién llamas?","¿Quién a llamas?"], e:"The person asked about is the object, so a goes before quién."},
+  {q:"“I know the doctor” is…", a:"Conozco al doctor.", w:["Conozco el doctor.","Conozco a el doctor.","Sé al doctor."], e:"a + el = al; conocer for a person."}
  ]},
 {k:"reflexive", title:"Reflexive verbs: me levanto", src:"EG ch. 14 · MSG ch. 23",
  point:"When you do something to yourself, the verb takes a matching pronoun: me levanto, te levantas, se levanta. Daily routine is full of them.",
@@ -302,7 +336,7 @@ var LESSONS = [
  point:"After “que”, when the first part wishes, asks, hopes, doubts or feels something about someone else’s action, the second verb goes into the subjunctive: Quiero que vengas.",
  body:'<ul><li><b>Form</b>: take the yo present, drop -o, swap the vowel: -ar → -e, -er/-ir → -a. <i>hablo → hable; tengo → tenga; digo → diga.</i></li>'+
   '<li>Six to memorize: <i>sea, esté, vaya, haya, dé, sepa</i>.</li>'+
-  '<li><mark>Triggers</mark> (think “WEDDING”): wishes <i>quiero que</i>, emotions <i>me alegra que</i>, doubt <i>no creo que</i>, requests <i>te pido que</i>, hope <i>ojalá, espero que</i>.</li>'+
+  '<li><mark>Triggers</mark> (think “WEIRDO”): <b>W</b>ishes <i>quiero que</i> · <b>E</b>motions <i>me alegra que</i> · <b>I</b>mpersonal phrases <i>es importante que</i> · <b>R</b>equests <i>te pido que</i> · <b>D</b>oubt <i>no creo que</i> · <b>O</b>jalá <i>ojalá que</i>.</li>'+
   '<li>Same subject? Use the infinitive: <i>Quiero ir.</i> Different subjects: <i>Quiero que tú vayas.</i></li>'+
   '<li><i>cuando</i> about the future: <i>Cuando llegues, llámame.</i> · <i>para que</i> always: <i>para que lo sepas</i>.</li></ul>',
  ex:[["Quiero que vengas.","I want you to come."],["Espero que estés bien.","I hope you’re well."],["Ojalá que no llueva.","I hope it doesn’t rain."],["Cuando llegues, llámame.","When you arrive, call me."]],

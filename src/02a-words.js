@@ -1,4 +1,6 @@
 /* ================================================================ WORDS
+   {o|a} marks an ending that follows the learner: cansado for a man, cansada for a woman
+   (set under "Speaking as"; genderize() in 03a-core.js).
    270 high-frequency words, ten a day, grouped so each day's ten belong together.
    Each: [Spanish, English, example sentence, its English].  Nouns carry their article
    so the gender is learned with the word (Essential Grammar ch. 2; MSG ch. 2).          */
@@ -29,7 +31,7 @@ var WORDS = [
  ["ella","she","Ella es mi hermana.","She is my sister."],
  ["nosotros","we","Nosotros vamos a la iglesia.","We go to church."],
  ["ellos","they","Ellos viven en México.","They live in Mexico."],
- ["la persona","person","Es una persona muy amable.","She is a very kind person."],
+ ["la persona","person","Juan es una persona muy amable.","Juan is a very kind person."],
  ["el amigo","friend","Mi amigo se llama Carlos.","My friend’s name is Carlos."],
  ["la gente","people","La gente aquí es muy simpática.","The people here are very nice."],
  /* 3 Question words */
@@ -39,7 +41,7 @@ var WORDS = [
  ["cuándo","when","¿Cuándo es la fiesta?","When is the party?"],
  ["cómo","how","¿Cómo se dice “book” en español?","How do you say “book” in Spanish?"],
  ["por qué","why","¿Por qué estás triste?","Why are you sad?"],
- ["porque","because","Estoy cansada porque trabajé mucho.","I’m tired because I worked a lot."],
+ ["porque","because","Estoy cansad{o|a} porque trabajé mucho.","I’m tired because I worked a lot."],
  ["cuánto","how much","¿Cuánto cuesta?","How much does it cost?"],
  ["cuál","which / what","¿Cuál es tu número?","What is your number?"],
  ["si","if","Si tienes tiempo, llámame.","If you have time, call me."],
@@ -94,7 +96,7 @@ var WORDS = [
  ["el cuarto","room / bedroom","Mi cuarto es pequeño.","My room is small."],
  ["la cama","bed","Me voy a la cama.","I’m going to bed."],
  ["la mesa","table","La comida está en la mesa.","The food is on the table."],
- ["la silla","chair","Toma una silla.","Take a chair."],
+ ["la silla","chair","Siéntate en esta silla.","Sit in this chair."],
  ["el baño","bathroom","El baño está al fondo.","The bathroom is at the back."],
  ["la ventana","window","Abre la ventana.","Open the window."],
  ["la llave","key","No encuentro mis llaves.","I can’t find my keys."],
@@ -108,7 +110,7 @@ var WORDS = [
  ["el pollo","chicken","Quiero arroz con pollo.","I want rice with chicken."],
  ["la fruta","fruit","Me gusta la fruta.","I like fruit."],
  ["el desayuno","breakfast","El desayuno es a las ocho.","Breakfast is at eight."],
- ["la cena","dinner","¿Qué hay para la cena?","What’s for dinner?"],
+ ["la cena","dinner","¿Qué hay de cena?","What’s for dinner?"],
  /* 9 Describing */
  ["grande","big","Es una ciudad grande.","It’s a big city."],
  ["pequeño","small","Tengo un perro pequeño.","I have a small dog."],
@@ -118,7 +120,7 @@ var WORDS = [
  ["viejo","old","Es un carro viejo.","It’s an old car."],
  ["bonito","pretty","¡Qué bonito día!","What a pretty day!"],
  ["feliz","happy","Estoy muy feliz.","I’m very happy."],
- ["cansado","tired","Estoy cansada hoy.","I’m tired today."],
+ ["cansado","tired","Estoy cansad{o|a} hoy.","I’m tired today."],
  ["difícil","difficult","El examen fue difícil.","The exam was difficult."],
  /* 10 Ten verbs you need first */
  ["ser","to be (what it is)","Soy estudiante.","I am a student."],
@@ -231,16 +233,16 @@ var WORDS = [
  ["la medicina","medicine","Toma la medicina con agua.","Take the medicine with water."],
  ["la farmacia","pharmacy","La farmacia está abierta.","The pharmacy is open."],
  /* 19 Feelings */
- ["contento","glad","Estoy contenta con el resultado.","I’m glad about the result."],
+ ["contento","glad","Estoy content{o|a} con el resultado.","I’m glad about the result."],
  ["triste","sad","Hoy estoy un poco triste.","Today I’m a little sad."],
  ["enojado","angry","Está enojado conmigo.","He’s angry with me."],
- ["preocupado","worried","Estoy preocupada por el examen.","I’m worried about the exam."],
- ["nervioso","nervous","Estoy un poco nerviosa.","I’m a little nervous."],
- ["tranquilo","calm","Tranquila, todo va a estar bien.","Relax, everything will be fine."],
+ ["preocupado","worried","Estoy preocupad{o|a} por el examen.","I’m worried about the exam."],
+ ["nervioso","nervous","Estoy un poco nervios{o|a}.","I’m a little nervous."],
+ ["tranquilo","calm","Tranquil{o|a}, todo va a estar bien.","Relax, everything will be fine."],
  ["el miedo","fear","Tengo miedo.","I’m afraid."],
- ["sorprendido","surprised","Estoy muy sorprendida.","I’m very surprised."],
+ ["sorprendido","surprised","Estoy muy sorprendid{o|a}.","I’m very surprised."],
  ["aburrido","bored / boring","La película es aburrida.","The movie is boring."],
- ["emocionado","excited","¡Estoy muy emocionada!","I’m so excited!"],
+ ["emocionado","excited","¡Estoy muy emocionad{o|a}!","I’m so excited!"],
  /* 20 Doing things */
  ["comprar","to buy","Quiero comprar pan.","I want to buy bread."],
  ["pagar","to pay","¿Puedo pagar con tarjeta?","Can I pay by card?"],
@@ -287,12 +289,12 @@ var WORDS = [
  ["el árbol","tree","Hay un árbol grande en el parque.","There’s a big tree in the park."],
  /* 24 How much, how fast */
  ["mucho","a lot","Te quiero mucho.","I love you very much."],
- ["poco","a little","Hablo un poco de español.","I speak a little Spanish."],
+ ["poco","a little / not much","Tengo poco tiempo.","I don’t have much time."],
  ["bastante","quite / enough","Es bastante fácil.","It’s quite easy."],
  ["demasiado","too much","Es demasiado caro.","It’s too expensive."],
  ["casi","almost","Casi terminé.","I almost finished."],
  ["solo","only / just","Solo quiero agua.","I just want water."],
- ["otra vez","again","¿Puede repetirlo otra vez?","Can you repeat it again?"],
+ ["otra vez","again","¿Puede decirlo otra vez?","Can you say it again?"],
  ["juntos","together","Vamos juntos.","Let’s go together."],
  ["rápido","fast","Hablas muy rápido.","You speak very fast."],
  ["despacio","slowly","Más despacio, por favor.","More slowly, please."],

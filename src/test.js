@@ -108,12 +108,18 @@ ok(A.isIrregularIn(V('tener'), 'fut') && !A.isIrregularIn(V('ir'), 'fut'), 'futu
 ok(!A.isIrregularIn(V('conocer'), 'pret') && A.irregularMask(V('conocer'), 'pres')[0] && !A.irregularMask(V('conocer'), 'pres')[1], 'conocer: only yo is odd');
 
 head('English for the drills');
-const EN = [['ir','pret',3,'we went'],['ir','pres',2,'he / she goes'],['ser','pres',0,'I am'],['estar','pret',1,'you were'],['tener','fut',4,'they will have'],
+const EN = [['conocer','pret',0,'I met'],['saber','pret',0,'I found out'],['conocer','impf',0,'I used to know'],['ir','pret',3,'we went'],['ir','pres',2,'he / she goes'],['ser','pres',0,'I am'],['estar','pret',1,'you were'],['tener','fut',4,'they will have'],
   ['poder','pres',0,'I can'],['hacer','perf',2,'he / she has done'],['comer','prog',0,'I am eating'],['ir','subj',1,'…that you go'],['venir','cmd',1,'Come!'],['volver','pret',0,'I came back'],['hablar','impf',3,'we used to speak']];
 EN.forEach(([inf, t, p, want]) => ok(A.englishFor(V(inf), t, p) === want, 'English: ' + inf + ' ' + t + ' ' + p, A.englishFor(V(inf), t, p)));
 A.VERBS.forEach(v => A.TENSES.forEach(t => { for (let p = 0; p < 5; p++) { const e = A.englishFor(v, t.k, p); ok(e && !/undefined/.test(e), 'English exists: ' + v.inf + ' ' + t.k, e); } }));
 
 // ---------- comparing speech and typing ----------
+head('the learner’s own endings');
+ok(A.genderize('Estoy cansad{o|a}.', 'm') === 'Estoy cansado.' && A.genderize('Estoy cansad{o|a}.', 'f') === 'Estoy cansada.', 'cansado for a man, cansada for a woman');
+ok(A.genderize('a {boy|girl}', 'm') === 'a boy', 'the English follows too');
+ok(!/\{[^{}"]*\|[^{}"]*\}/.test(JSON.stringify([A.WORDS, A.CONNECTORS, A.DIALOGUES])), 'no {o|a} marker is left in the data');
+ok(A.WORDS.some(w => w[2] === 'Estoy cansada hoy.'), 'the default is a woman (the original learner)');
+
 head('checking what was said');
 ok(A.speechScore('hola como estas', 'Hola, ¿cómo estás?').ratio === 1, 'accents and punctuation don’t matter to the ear');
 ok(A.speechScore('ano', 'año').ratio === 0, 'but ñ is its own letter (año ≠ ano)');
@@ -125,7 +131,8 @@ const best = A.bestScore(['Hola como está', 'hola cómo estás'], '¿Cómo est�
 ok(best.ratio === 1 && best.heard === 'hola cómo estás', 'the best of the recognizer’s guesses is used', JSON.stringify(best));
 ok(A.bestScore([], 'hola').ratio <= 0, 'no guesses scores nothing');
 ok(A.checkTyped('fuimos', 'fuimos') === 'right' && A.checkTyped(' Fuimos ', 'fuimos') === 'right', 'typed: right, ignoring case and spaces');
-ok(A.checkTyped('esta', 'está') === 'accent' && A.checkTyped('ano', 'año') === 'accent', 'typed: right but for the accent');
+ok(A.checkTyped('esta', 'está') === 'accent' && A.checkTyped('dejo', 'dejó') === 'accent', 'typed: right but for the accent');
+ok(A.checkTyped('ano', 'año') === 'wrong' && A.checkTyped('manana', 'mañana') === 'wrong', 'ñ is a letter, not an accent (año ≠ ano)');
 ok(A.checkTyped('fue', 'fuimos') === 'wrong' && A.checkTyped('', 'fui') === 'empty', 'typed: wrong and empty');
 ok(A.checkTyped('me levanto', 'me levanto') === 'right' && A.checkTyped('me  levanto', 'me levanto') === 'right', 'two-word forms');
 
@@ -140,6 +147,8 @@ c = A.srsGrade('w1', 2, 100); ok(c.i === 3 && c.e > 2.5, '“easy” jumps furth
 A.srsGrade('w2', 1, 100);
 ok(JSON.stringify(A.srsDue(101)) === '["w2"]', 'due today, oldest first', JSON.stringify(A.srsDue(101)));
 ok(A.srsDue(112).includes('w0') && A.srsDue(112).includes('w1'), 'later days bring the rest back');
+c = A.srsIntroduce('w9', 100); ok(c.r === 0 && c.d === 101 && A.cardDirection(c) === 'recognize', 'a word just met comes back tomorrow, to recognize first', JSON.stringify(c));
+ok(A.srsIntroduce('w9', 105).d === 101, 'meeting it again doesn’t reset it');
 ok(A.cardDirection({r:1}) === 'produce' && A.cardDirection({r:2}) === 'recognize', 'reviews alternate: say it, then recognize it');
 
 head('the daily plan');
@@ -200,7 +209,7 @@ seed = 3; const tsp = []; for (let k = 0; k < 40; k++) tsp.push(...A.todaysSpeak
 ok(tsp.some(x => x.wi === 10) && tsp.every(x => x.src === 'survival' || [10, 11].includes(x.wi)), 'today’s speaking uses only words already met (plus phrases)');
 const bp = A.buildPrompts(30, rnd);
 ok(bp.length === 30 && bp.every(p => /^[A-ZÁÉÍÓÚ]/.test(p.es) && /\.$/.test(p.es) && /\.$/.test(p.en) && !/\bse\.$/.test(p.es)), 'starter + verb prompts are clean sentences', bp.slice(0, 3).map(p => p.es + ' / ' + p.en).join(' · '));
-ok(bp.every(p => !/Quiero querer|Puedo poder|Sé saber/.test(p.es)), 'no doubled-up nonsense');
+ok(bp.every(p => !/querer|poder|saber|poner|dar|traer|buscar|pedir|encontrar|decir|hacer\./.test(p.es)), 'only verbs that make a whole sentence alone');
 
 // ---------- connectors ----------
 head('connecting words');
@@ -222,8 +231,9 @@ const mc = A.mcq('q', 'sí', ['si', 'sí', 'no', 'ya', 'yo'], rnd);
 ok(mc.opts.length === 4 && mc.opts.filter(o => A.fold(o) === 'si').length === 1, 'options never repeat, even up to accents');
 
 head('grammar lessons');
-ok(A.LESSONS.length === 20, 'twenty lessons', A.LESSONS.length);
-ok(new Set(A.LESSONS.map(l => l.k)).size === 20, 'unique keys');
+ok(A.LESSONS.length === 22, 'twenty-two lessons', A.LESSONS.length);
+ok(new Set(A.LESSONS.map(l => l.k)).size === 22, 'unique keys');
+ok(A.lessonByKey('personala') && A.lessonByKey('saberconocer'), 'the personal a and saber/conocer are taught');
 A.LESSONS.forEach(l => {
   ok(l.point && l.able && l.body && /EG|MSG/.test(l.src), l.title + ': point, able, notes and a source chapter');
   ok(l.ex.length >= 3 && l.ex.every(x => x[0] && x[1]), l.title + ': at least three examples to hear');

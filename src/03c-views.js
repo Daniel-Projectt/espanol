@@ -92,7 +92,7 @@ function reviewRunner(box, done){
   }
   function grade(g){
     var id = queue.shift();
-    if(g === 0){ srsGrade(id, 0, undefined, all); if(!seen[id]){ seen[id] = 1; queue.push(id); total++; } }
+    if(g === 0){ srsGrade(id, 0, undefined, all); seen[id] = 1; queue.push(id); total++; }
     else { srsGrade(id, seen[id] ? 1 : g, undefined, all); n++; }
     show();
   }
@@ -111,7 +111,7 @@ function newWordsRunner(box, done){
   var ids = todaysNew(), k = 0;
   function show(){
     if(k >= ids.length){
-      var all = srsAll(); ids.forEach(function(i){ if(!all[wordId(i)]) srsGrade(wordId(i), 1, undefined, all); });
+      var all = srsAll(); ids.forEach(function(i){ srsIntroduce(wordId(i), undefined, all); });
       box.innerHTML = '<div class="result card-corners">' + CORNERS + '<div class="big">' + ids.length + ' new words</div><div class="rsub">They’ll come back tomorrow. Next time, you’ll be asked to say them.</div>' +
         '<div class="toolbar"><button class="btn primary" type="button" data-step2="speak">Now speak with them</button></div></div>';
       $("[data-step2]", box).addEventListener("click", function(){ runStep("speak"); });
@@ -238,7 +238,7 @@ function renderVerbDrill(){
 }
 function renderPatterns(){
   $("#verbPatterns").innerHTML =
-    '<div class="rules">' + PATTERNS.map(function(p){ return '<div class="rule"><h4>' + esc(p.t) + '</h4><p class="ex es">' + esc(p.l) + ' ' + sayBtn(p.l.replace(/ · /g, ", ")) + '</p><p>' + esc(p.x) + '</p></div>'; }).join("") + '</div>' + divider() +
+    '<div class="rules">' + PATTERNS.map(function(p){ return '<div class="rule"><h4>' + esc(p.t) + '</h4><p class="ex es">' + esc(p.l) + (/-/.test(p.l) ? '' : ' ' + sayBtn(p.l.replace(/ · /g, ", "))) + '</p><p>' + esc(p.x) + '</p></div>'; }).join("") + '</div>' + divider() +
     VERB_GROUPS.map(function(g){ return '<div class="gsec"><h2>' + esc(g.name) + '</h2><p class="note">' + esc(g.note) + '</p><div class="chips">' +
       VERBS.filter(function(v){ return v.group === g.k; }).map(function(v){ return '<button class="chip vlink" type="button" data-v="' + esc(v.inf) + '"><span class="es">' + esc(v.inf) + '</span> <span class="tl">' + esc(v.en) + '</span></button>'; }).join("") + '</div></div>'; }).join("");
   $$(".vlink", $("#verbPatterns")).forEach(function(b){ b.addEventListener("click", function(){ save("vt.verb", b.getAttribute("data-v")); showTopic("verbs"); showMode("verbs", "tables"); renderVerbTables(); }); });
@@ -437,7 +437,9 @@ function go(target, from){
   window.scrollTo(0, 0);
 }
 function initSettings(){
-  var r = $("#setRate"), n = $("#setNew"), l = $("#setLang");
+  var r = $("#setRate"), n = $("#setNew"), l = $("#setLang"), gs = $("#setGender");
+  gs.value = GENDER;
+  gs.addEventListener("change", function(){ save("gender", gs.value); location.reload(); });
   r.value = String(Speech.rate); n.value = String(newPerDay()); l.value = Speech.lang;
   r.addEventListener("change", function(){ Speech.rate = +r.value; save("rate", Speech.rate); Speech.say("Hola, ¿cómo estás?"); });
   n.addEventListener("change", function(){ save("newPerDay", +n.value); var t = load("newToday", null); if(t && !dayLog()["new"]) save("newToday", null); if(!$("#topic-today").hidden) renderToday(); });

@@ -5,7 +5,7 @@ if(typeof window === "undefined"){
     DIALOGUES:DIALOGUES, LESSONS:LESSONS, DRILL_VERBS:DRILL_VERBS, TENSE_LADDER:TENSE_LADDER,
     conjugate:conjugate, irregularMask:irregularMask, isIrregularIn:isIrregularIn, verbByInf:verbByInf, englishFor:englishFor,
     fold:fold, words:words, speechScore:speechScore, bestScore:bestScore, checkTyped:checkTyped, PASS:PASS,
-    srsGrade:srsGrade, srsDue:srsDue, srsAll:srsAll, learnedIndexes:learnedIndexes, cardDirection:cardDirection,
+    srsGrade:srsGrade, srsIntroduce:srsIntroduce, genderize:genderize, srsDue:srsDue, srsAll:srsAll, learnedIndexes:learnedIndexes, cardDirection:cardDirection,
     todaysNew:todaysNew, markDone:markDone, dayLog:dayLog, streak:streak, verbOfDay:verbOfDay, startDay:startDay, save:save, load:load,
     drillItem:drillItem, drillSet:drillSet, speakPool:speakPool, todaysSpeaking:todaysSpeaking, buildPrompts:buildPrompts,
     mcq:mcq, wordQuiz:wordQuiz, connectorQuiz:connectorQuiz, lessonQuiz:lessonQuiz, findWhole:findWhole, lessonByKey:lessonByKey,

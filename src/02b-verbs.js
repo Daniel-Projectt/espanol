@@ -49,7 +49,7 @@ var VERBS = [
   stem:"ue", pretStem:"pud", futStem:"podr", ger:"pudiendo", cmd:null},
  {inf:"querer", en:"to want, to love", e:["want","wants","wanted","wanted","wanting"], group:"big",
   why:"e → ie (quiero); past quise; future querré.",
-  stem:"ie", pretStem:"quis", futStem:"querr"},
+  stem:"ie", pretStem:"quis", futStem:"querr", pretEn:"tried to (wanted)"},
  {inf:"decir", en:"to say, to tell", e:["say","says","said","said","saying"], group:"big",
   why:"Yo digo; e → i (dices); past dije (a j-stem); future diré; participle dicho.",
   yo:"digo", stem:"i", pretStem:"dij", futStem:"dir", cmd:"di", part:"dicho"},
@@ -58,7 +58,7 @@ var VERBS = [
   yo:"vengo", stem:"ie", pretStem:"vin", futStem:"vendr", cmd:"ven"},
  {inf:"saber", en:"to know (facts, how to)", e:["know","knows","knew","known","knowing"], group:"big",
   why:"Yo sé; past supe; future sabré; subjunctive sepa.",
-  yo:"sé", pretStem:"sup", futStem:"sabr", subj:["sepa","sepas","sepa","sepamos","sepan"]},
+  yo:"sé", pretStem:"sup", futStem:"sabr", pretEn:"found out", subj:["sepa","sepas","sepa","sepamos","sepan"]},
  {inf:"dar", en:"to give", e:["give","gives","gave","given","giving"], group:"big",
   why:"Yo doy; the past takes -er endings with no accents: di, dio.",
   yo:"doy", pret:["di","diste","dio","dimos","dieron"], subj:["dé","des","dé","demos","den"]},
@@ -83,7 +83,7 @@ var VERBS = [
   pres:["oigo","oyes","oye","oímos","oyen"], pret:["oí","oíste","oyó","oímos","oyeron"], futStem:"oir", ger:"oyendo", part:"oído", subj:["oiga","oigas","oiga","oigamos","oigan"]},
  {inf:"conocer", en:"to know (people, places)", e:["know","knows","knew","known","knowing"], group:"go",
   why:"Only yo is odd: conozco (and so conozca). Know a person or place, not a fact.",
-  yo:"conozco"},
+  yo:"conozco", pretEn:"met"},
 
  {inf:"pensar", en:"to think", e:["think","thinks","thought","thought","thinking"], group:"stem",
   why:"e → ie when the stress lands on the stem: pienso, but pensamos.", stem:"ie"},
@@ -155,6 +155,8 @@ var PATTERNS = [
    x:"The endings never change (-é, -ás, -á, -emos, -án), and the conditional uses the same stems: tendría, haría."},
   {t:"Irregular participles", l:"hecho · dicho · visto · puesto · vuelto · escrito · abierto",
    x:"Used after haber: he hecho, has dicho, hemos visto."},
+  {t:"Four verbs that change meaning in the past", l:"conocí · supe · pude · no quise",
+   x:"In the preterite, conocer = met (Conocí a Ana en 2020), saber = found out, poder = managed to, and no querer = refused. The imperfect keeps the plain meaning: conocía = I knew, sabía = I knew."},
   {t:"-ir stem changers in the past", l:"pidió · pidieron · durmió · durmieron · sintió",
    x:"Only -ir stem changers do this, and only in the él and ellos forms of the preterite (plus the gerund: pidiendo, durmiendo)."}
 ];
@@ -296,7 +298,7 @@ function englishFor(v, tense, p){
       if(be) return subj + " " + (p === 0 || third ? "was" : "were");
       if(e[0] === "be able") return subj + " managed to (could)";
       if(e[0] === "be called") return subj + " " + (p === 0 || third ? "was" : "were") + " called";
-      return subj + " " + e[2];
+      return subj + " " + (v.pretEn || e[2]);
     case "impf":
       if(be) return subj + " " + (p === 0 || third ? "was" : "were") + " (back then)";
       if(e[0] === "be able") return subj + " could (back then)";

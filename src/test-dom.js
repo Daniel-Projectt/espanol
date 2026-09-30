@@ -27,6 +27,7 @@ function makePage(opts) {
       w.scrollTo = () => {};
       w.Element.prototype.scrollIntoView = function () {};
       w.addEventListener('error', e => errors.push('window.onerror: ' + e.message));
+      if (opts.pre) for (const k of Object.keys(opts.pre)) w.localStorage.setItem(k, opts.pre[k]);
       w.SpeechSynthesisUtterance = function (t) { this.text = t; };
       w.speechSynthesis = { speak: u => spoken.push(u), cancel: () => {}, getVoices: () => opts.voices || [{ lang: 'es-ES', name: 'Monica' }, { lang: 'es-MX', name: 'Paulina' }, { lang: 'en-US', name: 'Samantha' }] };
       if (opts.mic) {
@@ -154,14 +155,15 @@ const srs = store('srs'); Object.keys(srs).forEach(k => { srs[k].d = 0; }); w.lo
 topic('words'); topic('today');
 ok(!$('[data-step="review"]').disabled && /5 cards waiting/.test($$('.step')[0].textContent), 'five cards waiting', $$('.step')[0].textContent);
 click($('[data-step="review"]'));
-ok(/Say in Spanish/.test($('#stepRoot').textContent) && /hello/.test($('#stepRoot .prompt').textContent), 'after meeting a word, you are asked to SAY it', $('#stepRoot .prompt').textContent);
-w.__heard = ['hola'];
-click($('#stepRoot .mic'));
-ok(visible($('#stepRoot .reveal-area')) && !$('#stepRoot .grades').hidden, 'saying it right reveals the answer');
+ok(/What does it mean/.test($('#stepRoot').textContent) && /hola/.test($('#stepRoot .prompt').textContent) && lastSaid() === 'hola', 'the first review: hear the Spanish, recall the meaning', $('#stepRoot .prompt').textContent);
+click($('#stepRoot .show'));
+ok(visible($('#stepRoot .reveal-area')) && !$('#stepRoot .grades').hidden && /hello/.test($('#stepRoot .reveal-area').textContent), 'show reveals the meaning and the grades');
 click($('#stepRoot .g0'));
 ok(/2 of 6/.test($('#stepRoot .qnum').textContent), '“again” brings it back at the end', $('#stepRoot .qnum').textContent);
+click($('#stepRoot .show')); click($('#stepRoot .g0'));
+ok(/3 of 7/.test($('#stepRoot .qnum').textContent), '“again” twice still brings it back', $('#stepRoot .qnum').textContent);
 let guard = 0;
-while ($('#stepRoot .grades') && guard++ < 10) { click($('#stepRoot .show')); click($('#stepRoot .g1')); }
+while ($('#stepRoot .grades') && guard++ < 12) { click($('#stepRoot .show')); click($('#stepRoot .g1')); }
 ok(/review/.test($('#stepRoot .result').textContent), 'review finished', $('#stepRoot').textContent);
 ok(Object.values(store('srs')).every(c => c.d > 0), 'every card scheduled ahead');
 ok($$('.step')[0].classList.contains('done'), 'review ticked');
@@ -261,7 +263,7 @@ click($('#vdGo'));
 click($$('#vdBox .ins').find(b => b.textContent === 'ñ'));
 ok($('#vdBox .answer').value === 'ñ', 'the accent keys type');
 mode('verbs', 'patterns');
-ok($$('#verbPatterns .rule').length === 9, 'nine patterns');
+ok($$('#verbPatterns .rule').length === 10, 'ten patterns, including the verbs that change meaning in the past');
 click($('#verbPatterns .vlink[data-v="dormir"]'));
 ok(visible($('#verbTables')) && $('#vtVerb').value === 'dormir', 'a verb chip opens its table');
 
@@ -279,7 +281,7 @@ ok(visible($('#sayRoot')) && $('#sayFrom [data-from="builders"]').getAttribute('
 
 head('grammar tab');
 topic('grammar');
-ok($$('details.lesson').length === 20, 'twenty lessons');
+ok($$('details.lesson').length === 22, 'twenty-two lessons');
 ok(/later/.test($('#lesson-subjunctive summary').textContent), 'the subjunctive is marked “later”');
 const ls = $('#lesson-serestar'); ls.open = true;
 ok(/The point/.test(ls.textContent) && /Be able to/.test(ls.textContent) && $$('.pl', ls).length >= 3, 'point, able to, examples');
@@ -302,6 +304,13 @@ ok(P.spoken[P.spoken.length - 1].voice.lang === 'es-ES', 'Spain accent switches 
 $('#setNew').value = '8'; $('#setNew').dispatchEvent(new w.Event('change'));
 ok(store('newPerDay') === 8, 'new words a day saved');
 ok(P.errors.length === 0, 'no errors all the way through', P.errors.join(' | '));
+
+head('speaking as a man');
+P = makePage({ mic: true, pre: { 'es.gender': '"m"' } }); w = P.w; d = P.d;
+ok($('#setGender').value === 'm', 'the setting shows it');
+topic('words');
+ok(/Estoy cansado hoy\./.test($('#wordsList').textContent) && !/cansada/.test($('#wordsList').textContent), 'sentences use cansado');
+ok(P.errors.length === 0, 'no errors', P.errors.join(' | '));
 
 head('no microphone, no Spanish voice');
 P = makePage({ mic: false, voices: [{ lang: 'en-US', name: 'Samantha' }] }); w = P.w; d = P.d;

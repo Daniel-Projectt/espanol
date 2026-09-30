@@ -642,7 +642,7 @@ details.lesson.ok .dnum::after{content:" ✓";color:var(--ok)}
 
     <!-- ================= GRAMMAR ================= -->
     <section class="topic" id="topic-grammar" hidden>
-      <p class="intro">Twenty short lessons in the order you need them to speak, drawn from <i>Spanish: An Essential Grammar</i> and <i>Modern Spanish Grammar</i>. Each has examples to hear and a short quiz.</p>
+      <p class="intro">Twenty-two short lessons in the order you need them to speak, drawn from <i>Spanish: An Essential Grammar</i> and <i>Modern Spanish Grammar</i>. Each has examples to hear and a short quiz.</p>
       <div id="grammarRoot"></div>
     </section>
 
@@ -652,6 +652,7 @@ details.lesson.ok .dnum::after{content:" ✓";color:var(--ok)}
     <div class="settings">
       <label>Voice speed <select class="pick" id="setRate"><option value="0.75">Slow</option><option value="0.9">Natural</option><option value="1">Fast</option></select></label>
       <label>New words a day <select class="pick" id="setNew"><option>3</option><option>5</option><option>8</option><option>10</option></select></label>
+      <label>Speaking as <select class="pick" id="setGender"><option value="f">a woman (cansada)</option><option value="m">a man (cansado)</option></select></label>
       <label>Accent <select class="pick" id="setLang"><option value="es-MX">Latin America</option><option value="es-ES">Spain</option></select></label>
     </div>
     <p class="srcline">Grammar from Bradley &amp; Mackenzie, <i>Spanish: An Essential Grammar</i>, and Kattán-Ibarra &amp; Pountain, <i>Modern Spanish Grammar</i>. Word choice from the RAE and Davies frequency lists; tense order from the Instituto Cervantes curriculum.</p>
@@ -662,6 +663,8 @@ details.lesson.ok .dnum::after{content:" ✓";color:var(--ok)}
 (function(){
 "use strict";
 /* ================================================================ WORDS
+   {o|a} marks an ending that follows the learner: cansado for a man, cansada for a woman
+   (set under "Speaking as"; genderize() in 03a-core.js).
    270 high-frequency words, ten a day, grouped so each day's ten belong together.
    Each: [Spanish, English, example sentence, its English].  Nouns carry their article
    so the gender is learned with the word (Essential Grammar ch. 2; MSG ch. 2).          */
@@ -692,7 +695,7 @@ var WORDS = [
  ["ella","she","Ella es mi hermana.","She is my sister."],
  ["nosotros","we","Nosotros vamos a la iglesia.","We go to church."],
  ["ellos","they","Ellos viven en México.","They live in Mexico."],
- ["la persona","person","Es una persona muy amable.","She is a very kind person."],
+ ["la persona","person","Juan es una persona muy amable.","Juan is a very kind person."],
  ["el amigo","friend","Mi amigo se llama Carlos.","My friend’s name is Carlos."],
  ["la gente","people","La gente aquí es muy simpática.","The people here are very nice."],
  /* 3 Question words */
@@ -702,7 +705,7 @@ var WORDS = [
  ["cuándo","when","¿Cuándo es la fiesta?","When is the party?"],
  ["cómo","how","¿Cómo se dice “book” en español?","How do you say “book” in Spanish?"],
  ["por qué","why","¿Por qué estás triste?","Why are you sad?"],
- ["porque","because","Estoy cansada porque trabajé mucho.","I’m tired because I worked a lot."],
+ ["porque","because","Estoy cansad{o|a} porque trabajé mucho.","I’m tired because I worked a lot."],
  ["cuánto","how much","¿Cuánto cuesta?","How much does it cost?"],
  ["cuál","which / what","¿Cuál es tu número?","What is your number?"],
  ["si","if","Si tienes tiempo, llámame.","If you have time, call me."],
@@ -757,7 +760,7 @@ var WORDS = [
  ["el cuarto","room / bedroom","Mi cuarto es pequeño.","My room is small."],
  ["la cama","bed","Me voy a la cama.","I’m going to bed."],
  ["la mesa","table","La comida está en la mesa.","The food is on the table."],
- ["la silla","chair","Toma una silla.","Take a chair."],
+ ["la silla","chair","Siéntate en esta silla.","Sit in this chair."],
  ["el baño","bathroom","El baño está al fondo.","The bathroom is at the back."],
  ["la ventana","window","Abre la ventana.","Open the window."],
  ["la llave","key","No encuentro mis llaves.","I can’t find my keys."],
@@ -771,7 +774,7 @@ var WORDS = [
  ["el pollo","chicken","Quiero arroz con pollo.","I want rice with chicken."],
  ["la fruta","fruit","Me gusta la fruta.","I like fruit."],
  ["el desayuno","breakfast","El desayuno es a las ocho.","Breakfast is at eight."],
- ["la cena","dinner","¿Qué hay para la cena?","What’s for dinner?"],
+ ["la cena","dinner","¿Qué hay de cena?","What’s for dinner?"],
  /* 9 Describing */
  ["grande","big","Es una ciudad grande.","It’s a big city."],
  ["pequeño","small","Tengo un perro pequeño.","I have a small dog."],
@@ -781,7 +784,7 @@ var WORDS = [
  ["viejo","old","Es un carro viejo.","It’s an old car."],
  ["bonito","pretty","¡Qué bonito día!","What a pretty day!"],
  ["feliz","happy","Estoy muy feliz.","I’m very happy."],
- ["cansado","tired","Estoy cansada hoy.","I’m tired today."],
+ ["cansado","tired","Estoy cansad{o|a} hoy.","I’m tired today."],
  ["difícil","difficult","El examen fue difícil.","The exam was difficult."],
  /* 10 Ten verbs you need first */
  ["ser","to be (what it is)","Soy estudiante.","I am a student."],
@@ -894,16 +897,16 @@ var WORDS = [
  ["la medicina","medicine","Toma la medicina con agua.","Take the medicine with water."],
  ["la farmacia","pharmacy","La farmacia está abierta.","The pharmacy is open."],
  /* 19 Feelings */
- ["contento","glad","Estoy contenta con el resultado.","I’m glad about the result."],
+ ["contento","glad","Estoy content{o|a} con el resultado.","I’m glad about the result."],
  ["triste","sad","Hoy estoy un poco triste.","Today I’m a little sad."],
  ["enojado","angry","Está enojado conmigo.","He’s angry with me."],
- ["preocupado","worried","Estoy preocupada por el examen.","I’m worried about the exam."],
- ["nervioso","nervous","Estoy un poco nerviosa.","I’m a little nervous."],
- ["tranquilo","calm","Tranquila, todo va a estar bien.","Relax, everything will be fine."],
+ ["preocupado","worried","Estoy preocupad{o|a} por el examen.","I’m worried about the exam."],
+ ["nervioso","nervous","Estoy un poco nervios{o|a}.","I’m a little nervous."],
+ ["tranquilo","calm","Tranquil{o|a}, todo va a estar bien.","Relax, everything will be fine."],
  ["el miedo","fear","Tengo miedo.","I’m afraid."],
- ["sorprendido","surprised","Estoy muy sorprendida.","I’m very surprised."],
+ ["sorprendido","surprised","Estoy muy sorprendid{o|a}.","I’m very surprised."],
  ["aburrido","bored / boring","La película es aburrida.","The movie is boring."],
- ["emocionado","excited","¡Estoy muy emocionada!","I’m so excited!"],
+ ["emocionado","excited","¡Estoy muy emocionad{o|a}!","I’m so excited!"],
  /* 20 Doing things */
  ["comprar","to buy","Quiero comprar pan.","I want to buy bread."],
  ["pagar","to pay","¿Puedo pagar con tarjeta?","Can I pay by card?"],
@@ -950,12 +953,12 @@ var WORDS = [
  ["el árbol","tree","Hay un árbol grande en el parque.","There’s a big tree in the park."],
  /* 24 How much, how fast */
  ["mucho","a lot","Te quiero mucho.","I love you very much."],
- ["poco","a little","Hablo un poco de español.","I speak a little Spanish."],
+ ["poco","a little / not much","Tengo poco tiempo.","I don’t have much time."],
  ["bastante","quite / enough","Es bastante fácil.","It’s quite easy."],
  ["demasiado","too much","Es demasiado caro.","It’s too expensive."],
  ["casi","almost","Casi terminé.","I almost finished."],
  ["solo","only / just","Solo quiero agua.","I just want water."],
- ["otra vez","again","¿Puede repetirlo otra vez?","Can you repeat it again?"],
+ ["otra vez","again","¿Puede decirlo otra vez?","Can you say it again?"],
  ["juntos","together","Vamos juntos.","Let’s go together."],
  ["rápido","fast","Hablas muy rápido.","You speak very fast."],
  ["despacio","slowly","Más despacio, por favor.","More slowly, please."],
@@ -1023,7 +1026,7 @@ var VERBS = [
   stem:"ue", pretStem:"pud", futStem:"podr", ger:"pudiendo", cmd:null},
  {inf:"querer", en:"to want, to love", e:["want","wants","wanted","wanted","wanting"], group:"big",
   why:"e → ie (quiero); past quise; future querré.",
-  stem:"ie", pretStem:"quis", futStem:"querr"},
+  stem:"ie", pretStem:"quis", futStem:"querr", pretEn:"tried to (wanted)"},
  {inf:"decir", en:"to say, to tell", e:["say","says","said","said","saying"], group:"big",
   why:"Yo digo; e → i (dices); past dije (a j-stem); future diré; participle dicho.",
   yo:"digo", stem:"i", pretStem:"dij", futStem:"dir", cmd:"di", part:"dicho"},
@@ -1032,7 +1035,7 @@ var VERBS = [
   yo:"vengo", stem:"ie", pretStem:"vin", futStem:"vendr", cmd:"ven"},
  {inf:"saber", en:"to know (facts, how to)", e:["know","knows","knew","known","knowing"], group:"big",
   why:"Yo sé; past supe; future sabré; subjunctive sepa.",
-  yo:"sé", pretStem:"sup", futStem:"sabr", subj:["sepa","sepas","sepa","sepamos","sepan"]},
+  yo:"sé", pretStem:"sup", futStem:"sabr", pretEn:"found out", subj:["sepa","sepas","sepa","sepamos","sepan"]},
  {inf:"dar", en:"to give", e:["give","gives","gave","given","giving"], group:"big",
   why:"Yo doy; the past takes -er endings with no accents: di, dio.",
   yo:"doy", pret:["di","diste","dio","dimos","dieron"], subj:["dé","des","dé","demos","den"]},
@@ -1057,7 +1060,7 @@ var VERBS = [
   pres:["oigo","oyes","oye","oímos","oyen"], pret:["oí","oíste","oyó","oímos","oyeron"], futStem:"oir", ger:"oyendo", part:"oído", subj:["oiga","oigas","oiga","oigamos","oigan"]},
  {inf:"conocer", en:"to know (people, places)", e:["know","knows","knew","known","knowing"], group:"go",
   why:"Only yo is odd: conozco (and so conozca). Know a person or place, not a fact.",
-  yo:"conozco"},
+  yo:"conozco", pretEn:"met"},
 
  {inf:"pensar", en:"to think", e:["think","thinks","thought","thought","thinking"], group:"stem",
   why:"e → ie when the stress lands on the stem: pienso, but pensamos.", stem:"ie"},
@@ -1129,6 +1132,8 @@ var PATTERNS = [
    x:"The endings never change (-é, -ás, -á, -emos, -án), and the conditional uses the same stems: tendría, haría."},
   {t:"Irregular participles", l:"hecho · dicho · visto · puesto · vuelto · escrito · abierto",
    x:"Used after haber: he hecho, has dicho, hemos visto."},
+  {t:"Four verbs that change meaning in the past", l:"conocí · supe · pude · no quise",
+   x:"In the preterite, conocer = met (Conocí a Ana en 2020), saber = found out, poder = managed to, and no querer = refused. The imperfect keeps the plain meaning: conocía = I knew, sabía = I knew."},
   {t:"-ir stem changers in the past", l:"pidió · pidieron · durmió · durmieron · sintió",
    x:"Only -ir stem changers do this, and only in the él and ellos forms of the preterite (plus the gerund: pidiendo, durmiendo)."}
 ];
@@ -1270,7 +1275,7 @@ function englishFor(v, tense, p){
       if(be) return subj + " " + (p === 0 || third ? "was" : "were");
       if(e[0] === "be able") return subj + " managed to (could)";
       if(e[0] === "be called") return subj + " " + (p === 0 || third ? "was" : "were") + " called";
-      return subj + " " + e[2];
+      return subj + " " + (v.pretEn || e[2]);
     case "impf":
       if(be) return subj + " " + (p === 0 || third ? "was" : "were") + " (back then)";
       if(e[0] === "be able") return subj + " could (back then)";
@@ -1362,7 +1367,7 @@ var BUILDERS = [
   {es:"Sé…",            en:"I know how to…",        ex:[["Sé nadar.","I know how to swim."],["No sé cocinar.","I don’t know how to cook."],["¿Sabes manejar?","Do you know how to drive?"]]},
   {es:"Intento…",       en:"I try to…",             ex:[["Intento hablar más.","I try to speak more."],["Intento dormir ocho horas.","I try to sleep eight hours."],["Intento llegar a tiempo.","I try to arrive on time."]]},
   {es:"Suelo…",         en:"I usually…",            ex:[["Suelo levantarme temprano.","I usually get up early."],["Suelo leer por la noche.","I usually read at night."],["¿Qué sueles hacer los domingos?","What do you usually do on Sundays?"]]},
-  {es:"Vuelvo a…",      en:"I (do it) again",       ex:[["Vuelvo a intentarlo.","I’ll try it again."],["No vuelvo a comer aquí.","I won’t eat here again."],["¿Lo vuelves a decir?","Will you say it again?"]]},
+  {es:"Vuelvo a…",      en:"I (do it) again",       ex:[["Vuelvo a intentarlo.","I’ll try it again."],["No vuelvo a comer aquí.","I won’t eat here again."],["¿Me lo vuelves a decir?","Can you tell me again?"]]},
   {es:"Dejé de…",       en:"I stopped (doing)…",    ex:[["Dejé de tomar café.","I stopped drinking coffee."],["Dejó de llover.","It stopped raining."],["No dejes de practicar.","Don’t stop practicing."]]},
   {es:"¿Te importa si…?", en:"Do you mind if…?",    ex:[["¿Te importa si abro la ventana?","Do you mind if I open the window?"],["¿Le importa si me siento aquí?","Do you mind if I sit here?"],["¿Te importa si llego tarde?","Do you mind if I arrive late?"]]},
   {es:"Espero que…",    en:"I hope that…",          ex:[["Espero que estés bien.","I hope you’re well."],["Espero que venga.","I hope she comes."],["Espero que te guste.","I hope you like it."]]},
@@ -1391,7 +1396,7 @@ var CONNECTORS = [
   ["but","a pesar de","in spite of","A pesar de la lluvia, vinieron.","In spite of the rain, they came.",""],
   ["why","porque","because","No fui porque estaba enferma.","I didn’t go because I was sick.",""],
   ["why","como","since (at the start)","Como no tenía dinero, no compré nada.","Since I had no money, I didn’t buy anything.","Starts the sentence; porque comes in the middle."],
-  ["why","por eso","that’s why","Estaba cansada, por eso me acosté.","I was tired, that’s why I went to bed.",""],
+  ["why","por eso","that’s why","Estaba cansad{o|a}, por eso me acosté.","I was tired, that’s why I went to bed.",""],
   ["why","así que","so","Llueve, así que me quedo en casa.","It’s raining, so I’m staying home.",""],
   ["why","entonces","so, then","Entonces, ¿vienes o no?","So, are you coming or not?",""],
   ["why","para que","so that","Te lo digo para que lo sepas.","I’m telling you so that you know.","Always followed by the subjunctive."],
@@ -1476,7 +1481,7 @@ var DIALOGUES = [
   ["a","No se preocupe. Es un resfriado. Descanse y tome mucha agua.","Don’t worry. It’s a cold. Rest and drink a lot of water."],
   ["b","Muy bien. Muchas gracias, doctor.","Very well. Thank you very much, doctor."]]},
  {k:"shop", title:"Shopping for clothes", where:"A clothing store", lines:[
-  ["a","Hola, ¿le puedo ayudar en algo?","Hi, can I help you with anything?"],
+  ["a","Hola, ¿en qué puedo servirle?","Hi, how can I help you?"],
   ["b","Sí, busco una chaqueta para el invierno.","Yes, I’m looking for a jacket for the winter."],
   ["a","¿Qué talla usa?","What size do you wear?"],
   ["b","Uso la talla mediana. ¿La tiene en azul?","I wear a medium. Do you have it in blue?"],
@@ -1494,7 +1499,7 @@ var DIALOGUES = [
   ["a","¿Todo bien con la comida?","Is everything good with the food?"],
   ["b","Sí, está riquísima. ¿Nos trae la cuenta, por favor?","Yes, it’s delicious. Could you bring us the check, please?"]]},
  {k:"childhood", title:"When I was little", where:"Sharing stories", lines:[
-  ["a","¿Dónde vivías cuando eras niña?","Where did you live when you were a girl?"],
+  ["a","¿Dónde vivías cuando eras niñ{o|a}?","Where did you live when you were a {boy|girl}?"],
   ["b","Vivía en un pueblo pequeño cerca de un lago.","I lived in a small town near a lake."],
   ["a","¿Y qué hacías en el verano?","And what did you do in the summer?"],
   ["b","Nadaba todos los días y jugaba con mis primos.","I swam every day and played with my cousins."],
@@ -1505,7 +1510,7 @@ var DIALOGUES = [
 ];
 
 /* ================================================================ GRAMMAR
-   Twenty short lessons, ordered by how soon you need them to speak.  Each one names the
+   Twenty-two short lessons, ordered by how soon you need them to speak.  Each one names the
    chapters it comes from: EG = Bradley & Mackenzie, Spanish: An Essential Grammar (2004);
    MSG = Kattán-Ibarra & Pountain, Modern Spanish Grammar, 2nd ed. (2003).
    Each lesson: point (the one idea), body (short notes), ex (examples to hear and repeat),
@@ -1651,6 +1656,24 @@ var LESSONS = [
   {q:"Which is right for a place you already mentioned?", a:"El banco está en la esquina.", w:["Hay el banco en la esquina.","El banco es en la esquina.","El banco hay en la esquina."], e:"Hay presents something new; estar locates something known."},
   {q:"“You’re right” is…", a:"Tienes razón.", w:["Eres razón.","Estás razón.","Hay razón."], e:"Tener razón = to be right."}
  ]},
+{k:"saberconocer", title:"Saber or conocer", src:"EG ch. 16 · MSG ch. 44",
+ point:"Both mean “to know”. Saber is knowing a fact or how to do something. Conocer is being familiar with a person, a place or a thing.",
+ body:'<table class="tbl"><tr><th>saber: facts and skills</th><th>conocer: people, places, things</th></tr>'+
+  '<tr><td><i>Sé tu nombre.</i> I know your name.</td><td><i>Conozco a tu hermana.</i> I know your sister.</td></tr>'+
+  '<tr><td><i>No sé dónde está.</i> I don’t know where it is.</td><td><i>Conozco Madrid.</i> I know (have been to) Madrid.</td></tr>'+
+  '<tr><td><i>Sé nadar.</i> I know how to swim (no “cómo”).</td><td><i>¿Conoces este libro?</i> Are you familiar with this book?</td></tr></table>'+
+  '<ul><li>Yo forms: <b>sé</b> and <b>conozco</b>.</li>'+
+  '<li><mark>After saber</mark> comes a fact: <i>que, dónde, cuándo, si…</i> or an infinitive. <mark>After conocer</mark> comes a noun; a person takes <b>a</b>.</li>'+
+  '<li>In the past they shift: <i>supe</i> = I found out; <i>conocí</i> = I met (for the first time).</li></ul>',
+ ex:[["No sé.","I don’t know."],["¿Conoces a mi amiga Ana?","Do you know my friend Ana?"],["¿Sabes cocinar?","Do you know how to cook?"],["La conocí en la universidad.","I met her at college."]],
+ able:"choose saber for facts and skills and conocer for people and places.",
+ q:[
+  {q:"“I know your brother” is…", a:"Conozco a tu hermano.", w:["Sé a tu hermano.","Sé tu hermano.","Conozco tu hermano."], e:"A person you are acquainted with: conocer, with the personal a."},
+  {q:"“Do you know where the bank is?” is…", a:"¿Sabes dónde está el banco?", w:["¿Conoces dónde está el banco?","¿Sabes a dónde es el banco?","¿Conoces el banco dónde está?"], e:"Knowing a fact (where something is) is saber."},
+  {q:"“I know how to swim” is…", a:"Sé nadar.", w:["Sé cómo a nadar.","Conozco nadar.","Conozco cómo nadar."], e:"Saber + infinitive = know how to; no “cómo” needed."},
+  {q:"“Conocí a su esposo ayer” means…", a:"I met her husband yesterday", w:["I knew her husband yesterday","I found her husband yesterday","I knew about her husband"], e:"In the preterite, conocer means to meet for the first time."},
+  {q:"“Have you been to Mexico City?” is best…", a:"¿Conoces la Ciudad de México?", w:["¿Sabes la Ciudad de México?","¿Sabes a la Ciudad de México?","¿Conoces a la Ciudad de México?"], e:"Being familiar with a place: conocer, and places take no personal a."}
+ ]},
 {k:"questions", title:"Asking questions, and saying no", src:"EG ch. 24, 27 · MSG ch. 12, 15, 31–32",
  point:"A yes/no question is a statement with a rising voice. Question words carry an accent. “No” goes right before the verb, and double negatives are correct.",
  body:'<ul><li><i>¿Tienes tiempo?</i> Same words as a statement, voice goes up. Written with ¿ at the start.</li>'+
@@ -1699,6 +1722,22 @@ var LESSONS = [
   {q:"Which is also correct for “Lo quiero ver”?", a:"Quiero verlo.", w:["Quiero lo ver.","Quiero ver lo.","Lo quiero verlo."], e:"A pronoun may attach to the infinitive."},
   {q:"“Call me!” (to a friend) is…", a:"¡Llámame!", w:["¡Me llama!","¡Llama me!","¡Me llámame!"], e:"Pronouns attach to yes-commands; the accent keeps the stress."},
   {q:"“Te quiero” means…", a:"I love you", w:["You love me","I want tea","Do you want?"], e:"Te = you (object). Quiero = I want / I love."}
+ ]},
+{k:"personala", title:"The personal a", src:"EG ch. 21 · MSG ch. 25",
+ point:"When the object of a verb is a specific person (or a pet), Spanish puts a in front of it: Veo a María. It isn’t translated.",
+ body:'<ul><li><i>Veo <b>a</b> María. Llamo <b>a</b> mi mamá. Busco <b>a</b> mi hijo.</i></li>'+
+  '<li>Not for things: <i>Veo la casa. Busco las llaves.</i></li>'+
+  '<li>With el it contracts: <i>Conozco <b>al</b> doctor.</i></li>'+
+  '<li><mark>Not after tener</mark>: <i>Tengo dos hermanos.</i> And not for an unspecified person: <i>Busco un médico.</i> (any doctor) vs <i>Busco al médico.</i> (the one I know).</li>'+
+  '<li>With question words: <i>¿<b>A</b> quién llamas?</i> (Who are you calling?)</li></ul>',
+ ex:[["Voy a llamar a mi mamá.","I’m going to call my mom."],["¿Conoces a Pedro?","Do you know Pedro?"],["Veo a los niños.","I see the children."],["¿A quién buscas?","Who are you looking for?"]],
+ able:"put a before a specific person who receives the action.",
+ q:[
+  {q:"“I see Ana” is…", a:"Veo a Ana.", w:["Veo Ana.","Veo con Ana.","A veo Ana."], e:"A specific person as the object takes the personal a."},
+  {q:"“I have three sisters” is…", a:"Tengo tres hermanas.", w:["Tengo a tres hermanas.","Tengo de tres hermanas.","Tengo al tres hermanas."], e:"Tener normally takes no personal a."},
+  {q:"“I’m looking for my keys” is…", a:"Busco mis llaves.", w:["Busco a mis llaves.","Busco para mis llaves.","Busco por mis llaves."], e:"Things don’t take the personal a (and buscar already means look for)."},
+  {q:"“Who are you calling?” is…", a:"¿A quién llamas?", w:["¿Quién llamas?","¿De quién llamas?","¿Quién a llamas?"], e:"The person asked about is the object, so a goes before quién."},
+  {q:"“I know the doctor” is…", a:"Conozco al doctor.", w:["Conozco el doctor.","Conozco a el doctor.","Sé al doctor."], e:"a + el = al; conocer for a person."}
  ]},
 {k:"reflexive", title:"Reflexive verbs: me levanto", src:"EG ch. 14 · MSG ch. 23",
  point:"When you do something to yourself, the verb takes a matching pronoun: me levanto, te levantas, se levanta. Daily routine is full of them.",
@@ -1808,7 +1847,7 @@ var LESSONS = [
  point:"After “que”, when the first part wishes, asks, hopes, doubts or feels something about someone else’s action, the second verb goes into the subjunctive: Quiero que vengas.",
  body:'<ul><li><b>Form</b>: take the yo present, drop -o, swap the vowel: -ar → -e, -er/-ir → -a. <i>hablo → hable; tengo → tenga; digo → diga.</i></li>'+
   '<li>Six to memorize: <i>sea, esté, vaya, haya, dé, sepa</i>.</li>'+
-  '<li><mark>Triggers</mark> (think “WEDDING”): wishes <i>quiero que</i>, emotions <i>me alegra que</i>, doubt <i>no creo que</i>, requests <i>te pido que</i>, hope <i>ojalá, espero que</i>.</li>'+
+  '<li><mark>Triggers</mark> (think “WEIRDO”): <b>W</b>ishes <i>quiero que</i> · <b>E</b>motions <i>me alegra que</i> · <b>I</b>mpersonal phrases <i>es importante que</i> · <b>R</b>equests <i>te pido que</i> · <b>D</b>oubt <i>no creo que</i> · <b>O</b>jalá <i>ojalá que</i>.</li>'+
   '<li>Same subject? Use the infinitive: <i>Quiero ir.</i> Different subjects: <i>Quiero que tú vayas.</i></li>'+
   '<li><i>cuando</i> about the future: <i>Cuando llegues, llámame.</i> · <i>para que</i> always: <i>para que lo sepas</i>.</li></ul>',
  ex:[["Quiero que vengas.","I want you to come."],["Espero que estés bien.","I hope you’re well."],["Ojalá que no llueva.","I hope it doesn’t rain."],["Cuando llegues, llámame.","When you arrive, call me."]],
@@ -1873,6 +1912,14 @@ function save(k, v){
   try{ window.localStorage.setItem(STORE + k, JSON.stringify(v)); }catch(e){}
 }
 
+/* the learner's own endings: "Estoy cansad{o|a}" → cansado (man) / cansada (woman).
+   Applied once to the data at start; changing the setting reloads the page. */
+function genderize(s, g){ return String(s).replace(/\{([^|{}]*)\|([^|{}]*)\}/g, g === "m" ? "$1" : "$2"); }
+var GENDER = load("gender", "f");
+WORDS.forEach(function(w){ for(var k = 0; k < 4; k++) w[k] = genderize(w[k], GENDER); });
+CONNECTORS.forEach(function(c){ for(var k = 1; k < c.length; k++) c[k] = genderize(c[k], GENDER); });
+DIALOGUES.forEach(function(d){ d.lines.forEach(function(l){ l[1] = genderize(l[1], GENDER); l[2] = genderize(l[2], GENDER); }); });
+
 /* local calendar day as a number, so "today" flips at the user's midnight */
 function dayNumber(date){
   var d = date || new Date();
@@ -1888,11 +1935,11 @@ function pick(a, n, rnd){ return shuffle(a, rnd).slice(0, n); }
 function esc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
 /* ---------------------------------------------------------------- comparing Spanish */
-function stripAccents(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ñ/g, "n"); }
+function stripAccents(s){ return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ñ/g, "n"); }
 /* ñ must survive: n and ñ are different letters (año / ano) */
 function fold(s){
   return String(s).toLowerCase()
-    .replace(/ñ/g, "\u0001").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\u0001/g, "ñ");
+    .replace(/ñ/g, "\u0001").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\u0001/g, "ñ");
 }
 function words(s){
   return fold(s).replace(/[¿?¡!.,;:—–\-“”"'’…()\[\]\/]/g, " ").split(/\s+/).filter(Boolean);
@@ -1929,7 +1976,8 @@ function checkTyped(given, answer){
   var g = norm(given), a = norm(answer);
   if(!g) return "empty";
   if(g === a) return "right";
-  if(stripAccents(g) === stripAccents(a)) return "accent";
+  var soft = function(s){ return s.replace(/ñ/g, "\u0001").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); };
+  if(soft(g) === soft(a)) return "accent";       /* á é í ó ú ü forgiven; ñ is a letter of its own */
   return "wrong";
 }
 
@@ -1952,6 +2000,12 @@ function srsDue(today, all){
 function learnedIndexes(all){
   all = all || srsAll();
   return Object.keys(all).filter(function(k){ return /^w\d+$/.test(k); }).map(function(k){ return +k.slice(1); }).sort(function(a, b){ return a - b; });
+}
+/* a word just met: first review tomorrow, and it starts with recognizing it */
+function srsIntroduce(id, today, all){
+  all = all || srsAll(); today = today === undefined ? dayNumber() : today;
+  if(!all[id]) all[id] = {i:1, e:2.5, r:0, d:today + 1};
+  save("srs", all); return all[id];
 }
 /* even reviews: hear/read the Spanish, recall the English; odd: see English, SAY the Spanish */
 function cardDirection(c){ return c && c.r % 2 === 1 ? "produce" : "recognize"; }
@@ -2090,9 +2144,10 @@ function lessonByKey(k){ for(var i = 0; i < LESSONS.length; i++) if(LESSONS[i].k
 /* endless speaking prompts: a starter + any verb → "Necesito dormir." (Language Transfer style) */
 var BUILD_GEN = [["Quiero","I want to"],["Necesito","I need to"],["Puedo","I can"],["No puedo","I can’t"],["Voy a","I’m going to"],
   ["Tengo que","I have to"],["Me gusta","I like to"],["Me gustaría","I would like to"],["Hay que","You have to"],["Intento","I try to"],["Suelo","I usually"]];
-var BUILD_SKIP = {ser:1, estar:1, poder:1, haber:1, querer:1, saber:1, conocer:1, llamarse:1, levantarse:1};
+/* only verbs that make a whole sentence on their own ("Necesito dormir.", never "Necesito poner.") */
+var BUILD_OK = ["ir", "venir", "salir", "volver", "dormir", "trabajar", "comer", "hablar", "leer", "escribir", "jugar", "empezar", "llegar", "entender", "ver"];
 function buildPrompts(n, rnd){
-  var vs = VERBS.filter(function(v){ return !BUILD_SKIP[v.inf]; }), out = [];
+  var vs = VERBS.filter(function(v){ return BUILD_OK.indexOf(v.inf) >= 0; }), out = [];
   for(var k = 0; k < (n || 8); k++){
     var b = BUILD_GEN[Math.floor((rnd || Math.random)() * BUILD_GEN.length)], v = vs[Math.floor((rnd || Math.random)() * vs.length)];
     out.push({es:b[0] + " " + v.inf + ".", en:b[1] + " " + v.e[0] + ".", hint:b[0] + "…"});
@@ -2107,7 +2162,7 @@ if(typeof window === "undefined"){
     DIALOGUES:DIALOGUES, LESSONS:LESSONS, DRILL_VERBS:DRILL_VERBS, TENSE_LADDER:TENSE_LADDER,
     conjugate:conjugate, irregularMask:irregularMask, isIrregularIn:isIrregularIn, verbByInf:verbByInf, englishFor:englishFor,
     fold:fold, words:words, speechScore:speechScore, bestScore:bestScore, checkTyped:checkTyped, PASS:PASS,
-    srsGrade:srsGrade, srsDue:srsDue, srsAll:srsAll, learnedIndexes:learnedIndexes, cardDirection:cardDirection,
+    srsGrade:srsGrade, srsIntroduce:srsIntroduce, genderize:genderize, srsDue:srsDue, srsAll:srsAll, learnedIndexes:learnedIndexes, cardDirection:cardDirection,
     todaysNew:todaysNew, markDone:markDone, dayLog:dayLog, streak:streak, verbOfDay:verbOfDay, startDay:startDay, save:save, load:load,
     drillItem:drillItem, drillSet:drillSet, speakPool:speakPool, todaysSpeaking:todaysSpeaking, buildPrompts:buildPrompts,
     mcq:mcq, wordQuiz:wordQuiz, connectorQuiz:connectorQuiz, lessonQuiz:lessonQuiz, findWhole:findWhole, lessonByKey:lessonByKey,
@@ -2427,7 +2482,7 @@ function reviewRunner(box, done){
   }
   function grade(g){
     var id = queue.shift();
-    if(g === 0){ srsGrade(id, 0, undefined, all); if(!seen[id]){ seen[id] = 1; queue.push(id); total++; } }
+    if(g === 0){ srsGrade(id, 0, undefined, all); seen[id] = 1; queue.push(id); total++; }
     else { srsGrade(id, seen[id] ? 1 : g, undefined, all); n++; }
     show();
   }
@@ -2446,7 +2501,7 @@ function newWordsRunner(box, done){
   var ids = todaysNew(), k = 0;
   function show(){
     if(k >= ids.length){
-      var all = srsAll(); ids.forEach(function(i){ if(!all[wordId(i)]) srsGrade(wordId(i), 1, undefined, all); });
+      var all = srsAll(); ids.forEach(function(i){ srsIntroduce(wordId(i), undefined, all); });
       box.innerHTML = '<div class="result card-corners">' + CORNERS + '<div class="big">' + ids.length + ' new words</div><div class="rsub">They’ll come back tomorrow. Next time, you’ll be asked to say them.</div>' +
         '<div class="toolbar"><button class="btn primary" type="button" data-step2="speak">Now speak with them</button></div></div>';
       $("[data-step2]", box).addEventListener("click", function(){ runStep("speak"); });
@@ -2573,7 +2628,7 @@ function renderVerbDrill(){
 }
 function renderPatterns(){
   $("#verbPatterns").innerHTML =
-    '<div class="rules">' + PATTERNS.map(function(p){ return '<div class="rule"><h4>' + esc(p.t) + '</h4><p class="ex es">' + esc(p.l) + ' ' + sayBtn(p.l.replace(/ · /g, ", ")) + '</p><p>' + esc(p.x) + '</p></div>'; }).join("") + '</div>' + divider() +
+    '<div class="rules">' + PATTERNS.map(function(p){ return '<div class="rule"><h4>' + esc(p.t) + '</h4><p class="ex es">' + esc(p.l) + (/-/.test(p.l) ? '' : ' ' + sayBtn(p.l.replace(/ · /g, ", "))) + '</p><p>' + esc(p.x) + '</p></div>'; }).join("") + '</div>' + divider() +
     VERB_GROUPS.map(function(g){ return '<div class="gsec"><h2>' + esc(g.name) + '</h2><p class="note">' + esc(g.note) + '</p><div class="chips">' +
       VERBS.filter(function(v){ return v.group === g.k; }).map(function(v){ return '<button class="chip vlink" type="button" data-v="' + esc(v.inf) + '"><span class="es">' + esc(v.inf) + '</span> <span class="tl">' + esc(v.en) + '</span></button>'; }).join("") + '</div></div>'; }).join("");
   $$(".vlink", $("#verbPatterns")).forEach(function(b){ b.addEventListener("click", function(){ save("vt.verb", b.getAttribute("data-v")); showTopic("verbs"); showMode("verbs", "tables"); renderVerbTables(); }); });
@@ -2772,7 +2827,9 @@ function go(target, from){
   window.scrollTo(0, 0);
 }
 function initSettings(){
-  var r = $("#setRate"), n = $("#setNew"), l = $("#setLang");
+  var r = $("#setRate"), n = $("#setNew"), l = $("#setLang"), gs = $("#setGender");
+  gs.value = GENDER;
+  gs.addEventListener("change", function(){ save("gender", gs.value); location.reload(); });
   r.value = String(Speech.rate); n.value = String(newPerDay()); l.value = Speech.lang;
   r.addEventListener("change", function(){ Speech.rate = +r.value; save("rate", Speech.rate); Speech.say("Hola, ¿cómo estás?"); });
   n.addEventListener("change", function(){ save("newPerDay", +n.value); var t = load("newToday", null); if(t && !dayLog()["new"]) save("newToday", null); if(!$("#topic-today").hidden) renderToday(); });

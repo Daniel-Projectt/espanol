@@ -18,6 +18,14 @@ function save(k, v){
   try{ window.localStorage.setItem(STORE + k, JSON.stringify(v)); }catch(e){}
 }
 
+/* the learner's own endings: "Estoy cansad{o|a}" → cansado (man) / cansada (woman).
+   Applied once to the data at start; changing the setting reloads the page. */
+function genderize(s, g){ return String(s).replace(/\{([^|{}]*)\|([^|{}]*)\}/g, g === "m" ? "$1" : "$2"); }
+var GENDER = load("gender", "f");
+WORDS.forEach(function(w){ for(var k = 0; k < 4; k++) w[k] = genderize(w[k], GENDER); });
+CONNECTORS.forEach(function(c){ for(var k = 1; k < c.length; k++) c[k] = genderize(c[k], GENDER); });
+DIALOGUES.forEach(function(d){ d.lines.forEach(function(l){ l[1] = genderize(l[1], GENDER); l[2] = genderize(l[2], GENDER); }); });
+
 /* local calendar day as a number, so "today" flips at the user's midnight */
 function dayNumber(date){
   var d = date || new Date();
@@ -33,11 +41,11 @@ function pick(a, n, rnd){ return shuffle(a, rnd).slice(0, n); }
 function esc(s){ return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
 
 /* ---------------------------------------------------------------- comparing Spanish */
-function stripAccents(s){ return s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ñ/g, "n"); }
+function stripAccents(s){ return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ñ/g, "n"); }
 /* ñ must survive: n and ñ are different letters (año / ano) */
 function fold(s){
   return String(s).toLowerCase()
-    .replace(/ñ/g, "\u0001").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/\u0001/g, "ñ");
+    .replace(/ñ/g, "\u0001").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\u0001/g, "ñ");
 }
 function words(s){
   return fold(s).replace(/[¿?¡!.,;:—–\-“”"'’…()\[\]\/]/g, " ").split(/\s+/).filter(Boolean);
@@ -74,7 +82,8 @@ function checkTyped(given, answer){
   var g = norm(given), a = norm(answer);
   if(!g) return "empty";
   if(g === a) return "right";
-  if(stripAccents(g) === stripAccents(a)) return "accent";
+  var soft = function(s){ return s.replace(/ñ/g, "\u0001").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); };
+  if(soft(g) === soft(a)) return "accent";       /* á é í ó ú ü forgiven; ñ is a letter of its own */
   return "wrong";
 }
 
@@ -97,6 +106,12 @@ function srsDue(today, all){
 function learnedIndexes(all){
   all = all || srsAll();
   return Object.keys(all).filter(function(k){ return /^w\d+$/.test(k); }).map(function(k){ return +k.slice(1); }).sort(function(a, b){ return a - b; });
+}
+/* a word just met: first review tomorrow, and it starts with recognizing it */
+function srsIntroduce(id, today, all){
+  all = all || srsAll(); today = today === undefined ? dayNumber() : today;
+  if(!all[id]) all[id] = {i:1, e:2.5, r:0, d:today + 1};
+  save("srs", all); return all[id];
 }
 /* even reviews: hear/read the Spanish, recall the English; odd: see English, SAY the Spanish */
 function cardDirection(c){ return c && c.r % 2 === 1 ? "produce" : "recognize"; }
@@ -235,9 +250,10 @@ function lessonByKey(k){ for(var i = 0; i < LESSONS.length; i++) if(LESSONS[i].k
 /* endless speaking prompts: a starter + any verb → "Necesito dormir." (Language Transfer style) */
 var BUILD_GEN = [["Quiero","I want to"],["Necesito","I need to"],["Puedo","I can"],["No puedo","I can’t"],["Voy a","I’m going to"],
   ["Tengo que","I have to"],["Me gusta","I like to"],["Me gustaría","I would like to"],["Hay que","You have to"],["Intento","I try to"],["Suelo","I usually"]];
-var BUILD_SKIP = {ser:1, estar:1, poder:1, haber:1, querer:1, saber:1, conocer:1, llamarse:1, levantarse:1};
+/* only verbs that make a whole sentence on their own ("Necesito dormir.", never "Necesito poner.") */
+var BUILD_OK = ["ir", "venir", "salir", "volver", "dormir", "trabajar", "comer", "hablar", "leer", "escribir", "jugar", "empezar", "llegar", "entender", "ver"];
 function buildPrompts(n, rnd){
-  var vs = VERBS.filter(function(v){ return !BUILD_SKIP[v.inf]; }), out = [];
+  var vs = VERBS.filter(function(v){ return BUILD_OK.indexOf(v.inf) >= 0; }), out = [];
   for(var k = 0; k < (n || 8); k++){
     var b = BUILD_GEN[Math.floor((rnd || Math.random)() * BUILD_GEN.length)], v = vs[Math.floor((rnd || Math.random)() * vs.length)];
     out.push({es:b[0] + " " + v.inf + ".", en:b[1] + " " + v.e[0] + ".", hint:b[0] + "…"});
