@@ -32,7 +32,7 @@ function renderToday(){
   };
   root.innerHTML =
     '<div class="dayhead card-corners">' + CORNERS +
-      '<div class="dn">Día ' + dayN + '</div>' +
+      '<div class="dn">Día ' + dayN + ' <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#heartrose"/></svg></div>' +
       '<div class="dmeta">' + (st ? st + '-day streak' : 'Start your streak today') + ' · ' + learnedIndexes(all).length + ' words met</div>' +
       '<div class="gprog"><div class="bar"><i style="width:' + (doneN / STEPS.length * 100) + '%"></i></div></div>' +
     '</div>' +
@@ -396,6 +396,7 @@ function renderGrammar(){
 
 /* ================================================================ tabs, modes, settings */
 function showTopic(t){
+  Speech.stop();
   $$(".topic-btn").forEach(function(b){ b.setAttribute("aria-selected", String(b.getAttribute("data-topic") === t)); });
   $$(".topic").forEach(function(s){ s.hidden = s.id !== "topic-" + t; });
   save("topic", t);
@@ -406,6 +407,7 @@ function showTopic(t){
   if(seg) activate(t, pressed(seg, "data-mode"));
 }
 function showMode(t, m){
+  Speech.stop();
   var seg = $('[data-modes="' + t + '"]'); if(!seg) return;
   $$("button", seg).forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-mode") === m)); });
   $$('[data-panel^="' + t + '/"]').forEach(function(p){ p.hidden = p.getAttribute("data-panel") !== t + "/" + m; });

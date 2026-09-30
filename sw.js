@@ -1,7 +1,7 @@
 /* Keeps a copy of the study guide on the device so it opens without a connection.
    The page itself is fetched network-first (updates show up when online);
    everything else is served from the cache once seen.                        */
-var CACHE = "espanol-v4";
+var CACHE = "espanol-v5";
 var CORE = ["./", "./index.html", "./icon.png", "./manifest.webmanifest"];
 
 self.addEventListener("install", function(e){
@@ -16,6 +16,8 @@ self.addEventListener("fetch", function(e){
   if(e.request.method !== "GET") return;
   var url = new URL(e.request.url);
   if(url.origin !== location.origin) return;
+  /* recordings: left to the browser (iPhone plays audio in pieces, which a cache can't serve) */
+  if(/\/audio\//.test(url.pathname)) return;
   var isPage = e.request.mode === "navigate" || /\/$|index\.html$/.test(url.pathname);
   if(isPage){
     e.respondWith(fetch(e.request).then(function(r){

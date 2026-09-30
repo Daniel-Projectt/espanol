@@ -24,9 +24,9 @@ h1{font-weight:400;font-size:66px;line-height:1.08;margin:0;letter-spacing:.005e
 body.icon .page{width:512px;height:512px;background-image:radial-gradient(360px 300px at 50% 36%,#fffdf7 0%,rgba(255,253,247,0) 72%)}
 body.icon .frame{inset:24px}
 body.icon .emblem{width:280px;height:280px;margin:0 0 10px}
-.emblem.heart{display:none}
-body.icon .emblem{display:none}
-body.icon .emblem.heart{display:block;width:300px;height:300px;margin:0 0 4px}
+.emblem:not(.heart){display:none}
+.emblem.heart{width:132px;height:132px;margin-bottom:8px}
+body.icon .emblem.heart{display:block;width:330px;height:330px;margin:-6px 0 0}
 body.icon .eyebrow,body.icon h1,body.icon .orn,body.icon .sub,body.icon .sub2{display:none}
 .short{display:none}
 body.icon .short{display:block;font-family:var(--sans);font-size:26px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);margin:0 0 0 .34em}
@@ -47,23 +47,24 @@ body.icon .short{display:block;font-family:var(--sans);font-size:26px;letter-spa
     <use href="#flh" transform="matrix(-1 0 0 1 320 0)"/>
     <path d="M160 16 l6 6-6 6-6-6z" fill="currentColor"/>
   </symbol>
-  <!-- the home-screen icon: a heart with a rose inside (made for someone special) -->
+  <!-- a heart with a rose inside: the app's icon and the seal at the top of the page -->
   <symbol id="heartrose" viewBox="0 0 120 120">
-    <path d="M60 104 C24 80 8 58 14 38 C20 20 44 14 60 34 C76 14 100 20 106 38 C112 58 96 80 60 104 Z" fill="#fbedf1" stroke="#b4506e" stroke-width="1.5" stroke-linejoin="round"/>
-    <path d="M60 110 C19 83 1 59 8 36 C15 14 43 7 60 28 C77 7 105 14 112 36 C119 59 101 83 60 110 Z" fill="none" stroke="#c6a469" stroke-width=".8" opacity=".8"/>
-    <path d="M60 97 C29 76 16 57 21 40 C26 26 45 22 60 40 C75 22 94 26 99 40 C104 57 91 76 60 97 Z" fill="none" stroke="#e8bccb" stroke-width="1"/>
-    <g fill="none" stroke="#c6a469" stroke-width="1.2" stroke-linecap="round">
-      <path d="M60 71 C60 78 59 84 60 90"/>
-      <path d="M60 81 C54 76 47 76 43 79 C48 84 55 84 60 81 Z" fill="#c6a469" fill-opacity=".85"/>
-      <path d="M60 85 C66 80 73 80 77 83 C72 88 65 88 60 85 Z" fill="#c6a469" fill-opacity=".85"/>
-    </g>
-    <g stroke="#b4506e" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M60 44 C71 44 77 51 76 59 C75 67 68 72 60 72 C52 72 45 67 44 59 C43 51 49 44 60 44 Z" fill="#f4d3dd"/>
-      <path d="M47 60 C50 67 55 70 60 70 C65 70 70 67 73 60" fill="none"/>
-      <path d="M50 50 C53 47 57 46 61 47" fill="none"/>
-      <path d="M60 51 C66 50 69 55 67 59 C65 63 58 64 55 60 C53 57 55 54 58 54 C60 54 61 56 60 57" fill="none"/>
-      <path d="M52 55 C51 61 54 65 59 66" fill="none"/>
-      <path d="M69 52 C71 56 71 60 68 64" fill="none"/>
+    <path d="M60 110 C19 83 1 59 8 36 C15 14 43 7 60 28 C77 7 105 14 112 36 C119 59 101 83 60 110 Z" fill="none" stroke="#c6a469" stroke-width=".8" opacity=".85"/>
+    <path d="M60 104 C24 80 8 58 14 38 C20 20 44 14 60 34 C76 14 100 20 106 38 C112 58 96 80 60 104 Z" fill="#fdf1f4" stroke="#b4506e" stroke-width="1.6" stroke-linejoin="round"/>
+    <!-- stem and leaves -->
+    <path d="M60 71 C60 78 59.2 85 60 94" fill="none" stroke="#6f8f63" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M59.5 83 C53 76 44 75 39 79 C45 86 53 87 59.5 83 Z" fill="#9dbb8f" stroke="#6f8f63" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M44 80 C49 81 54 82 59 83" fill="none" stroke="#6f8f63" stroke-width=".7" opacity=".8"/>
+    <path d="M60.5 88 C67 81 76 80 81 84 C75 91 67 92 60.5 88 Z" fill="#9dbb8f" stroke="#6f8f63" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M76 85 C71 86 66 87 61 88" fill="none" stroke="#6f8f63" stroke-width=".7" opacity=".8"/>
+    <!-- the bloom: outer petals, side petals, the cup, the swirl -->
+    <g stroke="#a8435f" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M38 50 C35 34 49 26 60 31 C71 26 85 34 82 50 C81 64 71 73 60 73 C49 73 39 64 38 50 Z" fill="#f4bccb"/>
+      <path d="M39 51 C42 65 51 72 60 72 C53 66 48 57 50 45 C45 45 41 47 39 51 Z" fill="#ea93ad"/>
+      <path d="M81 51 C78 65 69 72 60 72 C67 66 72 57 70 45 C75 45 79 47 81 51 Z" fill="#ea93ad"/>
+      <path d="M48 44 C47 35 55 31 60 35 C65 31 73 35 72 44 C72 54 66 60 60 60 C54 60 48 54 48 44 Z" fill="#f7cdd8"/>
+      <path d="M52 48 C54 55 58 57 60 57 C63 57 67 55 68 48" fill="none"/>
+      <path d="M60 39 C66 38 69 43 66 47 C63 51 56 50 55.5 45 C55 42 58 40.5 60.5 42 C62 43 61.5 45.5 59.5 45" fill="none"/>
     </g>
   </symbol>
   <!-- masthead seal: a sun, the old Spanish and Latin-American emblem, engraved like the others -->

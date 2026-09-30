@@ -63,12 +63,22 @@ var Speech = {
     Speech.stop();
     if(AUDIO_SET[k] && Speech.recorded() && typeof window.Audio === "function"){
       try{
-        var a = new window.Audio("audio/" + Speech.voice + "/" + k + ".mp3");
-        a.playbackRate = (Speech.rate / 0.9) * (slow ? 0.75 : 1);
-        a.preservesPitch = true;
+        var a = new window.Audio("audio/" + Speech.voice + "/" + k + ".mp3"), done = false;
+        var speed = (Speech.rate / 0.9) * (slow ? 0.75 : 1);
+        var setSpeed = function(){ a.defaultPlaybackRate = speed; a.playbackRate = speed; a.preservesPitch = a.webkitPreservesPitch = a.mozPreservesPitch = true; };
+        setSpeed();
+        if(a.addEventListener) a.addEventListener("loadedmetadata", setSpeed);   /* iPhone resets the speed on load */
         Speech.playing = a;
+        /* only a file that truly can't load (offline, missing) falls back to the phone voice, and only
+           if it is still the line she asked for: a line cut off by the next one never speaks again */
+        var fallback = function(){ if(done || Speech.playing !== a) return; done = true; Speech.playing = null; Speech.device(t, slow); };
+        if(a.addEventListener) a.addEventListener("error", fallback);
         var p = a.play();
-        if(p && p.catch) p.catch(function(){ Speech.device(t, slow); });   /* offline and not cached yet */
+        if(p && p.catch) p.catch(function(err){
+          var n = err && err.name;
+          if(n === "AbortError" || n === "NotAllowedError") return;   /* interrupted, or the browser blocked sound */
+          fallback();
+        });
         return;
       }catch(e){}
     }

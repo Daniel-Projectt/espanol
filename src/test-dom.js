@@ -34,7 +34,13 @@ function makePage(opts) {
       w.SpeechSynthesisUtterance = function (t) { this.text = t; };
       w.speechSynthesis = { speak: u => spoken.push(u), cancel: () => {}, getVoices: () => opts.voices || [{ lang: 'es-ES', name: 'Monica' }, { lang: 'es-MX', name: 'Paulina' }, { lang: 'en-US', name: 'Samantha' }] };
       w.webkitSpeechRecognition = function () { w.__micUsed = true; this.start = () => {}; };
-      w.Audio = function (src) { this.src = src; this.paused = true; this.play = () => { this.paused = false; played.push(this); return Promise.resolve(); }; this.pause = () => { this.paused = true; }; };
+      w.Audio = function (src) {
+        const me = this, on = {}; this.src = src; this.paused = true;
+        this.addEventListener = (ev, fn) => { (on[ev] = on[ev] || []).push(fn); };
+        this.fire = ev => (on[ev] || []).forEach(fn => fn());
+        this.play = () => { me.paused = false; played.push(me); return opts.playFails ? Promise.reject({ name: opts.playFails }) : Promise.resolve(); };
+        this.pause = () => { me.paused = true; };
+      };
     } });
   return { dom, w: dom.window, d: dom.window.document, errors, spoken, played };
 }
@@ -69,6 +75,7 @@ function playQuiz(root, pickRight, label) {
   return right;
 }
 
+(async () => {
 head('first open');
 ok(P.errors.length === 0, 'no errors on load', P.errors.join(' | '));
 ok(visible($('#topic-today')) && !visible($('#topic-speak')), 'opens on Today');
@@ -331,6 +338,28 @@ ok(builtKeys.length === lineCount, 'the published page has a recording for every
 const builtVoices = JSON.parse((built.match(/var AUDIO_VOICES = (.*);/) || [])[1] || '[]');
 ok(builtVoices.length >= 1 && builtVoices.every(v => builtKeys.every(k => fs.existsSync(path.join(__dirname, '..', 'audio', v.id, k + '.mp3')))), 'every voice offered has every recording file', builtVoices.map(v => v.id).join());
 
+head('the voice never jumps in by itself');
+const recHtml = html.replace('var AUDIO_KEYS = "";', 'var AUDIO_KEYS = "' + rec.join(' ') + '";');
+P = makePage({ html: recHtml, playFails: 'AbortError' }); w = P.w; d = P.d;
+click($('[data-step="new"]'));
+click($('#stepRoot [data-say]'));
+await new Promise(r => setTimeout(r, 30));
+ok(P.spoken.length === 0, 'a line cut off by the next one is NOT repeated in the phone voice', P.spoken.map(u => u.text).join(' | '));
+P = makePage({ html: recHtml, playFails: 'NotAllowedError' }); w = P.w; d = P.d;
+click($('[data-step="new"]'));
+await new Promise(r => setTimeout(r, 30));
+ok(P.spoken.length === 0, 'a browser that blocks sound gets silence, not the robot voice');
+P = makePage({ html: recHtml }); w = P.w; d = P.d;
+click($('[data-step="new"]'));
+P.played[P.played.length - 1].fire('error');
+ok(P.spoken.length === 1 && P.spoken[0].text === 'hola', 'a recording that cannot load (offline) falls back to the phone voice once');
+click($('#stepRoot [data-say]')); const cut = P.played[P.played.length - 2];
+cut.fire('error');
+ok(P.spoken.length === 1, 'but never for a line that was already replaced');
+topic('words');
+ok(P.played[P.played.length - 1].paused, 'changing tabs stops the voice');
+ok(/Un poquito cada día/.test($('header').textContent) && $('header use').getAttribute('href') === '#heartrose', 'the heart and rose at the top, with “Un poquito cada día”');
+
 head('a phone without a Spanish voice');
 P = makePage({ voices: [{ lang: 'en-US', name: 'Samantha' }] }); w = P.w; d = P.d;
 ok(P.errors.length === 0, 'loads', P.errors.join(' | '));
@@ -339,3 +368,4 @@ ok(P.errors.length === 0, 'no errors', P.errors.join(' | '));
 
 console.log('\n' + (fails === 0 ? 'ALL ' + checks + ' DOM CHECKS PASSED' : fails + ' FAILURES out of ' + checks + ' DOM checks'));
 process.exit(fails ? 1 : 0);
+})().catch(e => { console.log('TEST CRASH', e); process.exit(1); });

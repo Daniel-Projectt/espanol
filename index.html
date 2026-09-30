@@ -295,7 +295,11 @@ kbd{font-family:var(--sans);font-size:10px;border:1px solid var(--line-strong);b
 }
 .orn,.rail{color:#c6a469}
 header .eyebrow{color:#9a7a44}
-.emblem{display:block;width:70px;height:70px;margin:0 auto 14px;color:#c6a469}
+.emblem{display:block;width:96px;height:96px;margin:0 auto 10px}
+.emblem.heart{animation:beat 1.6s ease-out .25s 1 both;transform-origin:50% 60%}
+@keyframes beat{0%{transform:scale(.92);opacity:0}35%{transform:scale(1.06);opacity:1}55%{transform:scale(.98)}75%{transform:scale(1.03)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){ .emblem.heart{animation:none} }
+.poquito{display:block;font-family:var(--serif);font-style:italic;font-size:21px;color:var(--gold);margin-bottom:2px}
 .topic-btn{padding:13px 13px}
 .seg{justify-content:center}
 .seg button{flex:1 1 auto;border-bottom:1px solid var(--line);margin-bottom:-1px}
@@ -310,7 +314,8 @@ select.pick{font-family:var(--sans);font-size:12.5px;padding:9px 10px;min-height
 
 /* ---------------- today ---------------- */
 .dayhead{max-width:560px;margin:0 auto 18px;background:var(--surface);border:1px solid var(--line);border-radius:4px;box-shadow:var(--shadow);padding:24px 26px 18px;text-align:center}
-.dayhead .dn{font-family:var(--serif);font-size:34px;letter-spacing:.02em}
+.dayhead .dn{font-family:var(--serif);font-size:34px;letter-spacing:.02em;display:flex;align-items:center;justify-content:center;gap:8px}
+.dayhead .mini{width:30px;height:30px}
 .dayhead .dmeta{font-family:var(--sans);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-top:4px}
 .gprog .bar{height:3px;background:var(--line);margin:12px auto 0;max-width:320px;overflow:hidden;border-radius:2px}
 .gprog .bar i{display:block;height:100%;background:var(--gold);transition:width .3s}
@@ -461,6 +466,7 @@ details.lesson.ok .dnum::after{content:" ✓";color:var(--ok)}
   .tbl.conj td.en{display:none}
   .ln{max-width:100%}
 }
+#topic-today .intro{margin-bottom:20px}
 </style>
 </head>
 <body>
@@ -487,15 +493,25 @@ details.lesson.ok .dnum::after{content:" ✓";color:var(--ok)}
     <path d="M28 20 c6-3 12-1 14 6 c-6 1-11-1-14-6z" fill="currentColor" opacity=".8"/>
     <path d="M8 8 l4 4-4 4-4-4z" fill="currentColor"/>
   </symbol>
-  <!-- masthead seal: a sun, the old Spanish and Latin-American emblem, engraved like the others -->
-  <symbol id="emblem" viewBox="0 0 120 120">
-    <circle cx="60" cy="60" r="59" fill="none" stroke="currentColor" stroke-width=".5" opacity=".35"/>
-    <circle cx="60" cy="60" r="56.5" fill="none" stroke="currentColor" stroke-width=".9" opacity=".55"/>
-    <g stroke="currentColor" stroke-width="1.1" stroke-linecap="round" opacity=".8"><path d="M60 9 L60 21" transform="rotate(0 60 60)"/><path d="M60 14 L60 21" transform="rotate(15 60 60)"/><path d="M60 9 L60 21" transform="rotate(30 60 60)"/><path d="M60 14 L60 21" transform="rotate(45 60 60)"/><path d="M60 9 L60 21" transform="rotate(60 60 60)"/><path d="M60 14 L60 21" transform="rotate(75 60 60)"/><path d="M60 9 L60 21" transform="rotate(90 60 60)"/><path d="M60 14 L60 21" transform="rotate(105 60 60)"/><path d="M60 9 L60 21" transform="rotate(120 60 60)"/><path d="M60 14 L60 21" transform="rotate(135 60 60)"/><path d="M60 9 L60 21" transform="rotate(150 60 60)"/><path d="M60 14 L60 21" transform="rotate(165 60 60)"/><path d="M60 9 L60 21" transform="rotate(180 60 60)"/><path d="M60 14 L60 21" transform="rotate(195 60 60)"/><path d="M60 9 L60 21" transform="rotate(210 60 60)"/><path d="M60 14 L60 21" transform="rotate(225 60 60)"/><path d="M60 9 L60 21" transform="rotate(240 60 60)"/><path d="M60 14 L60 21" transform="rotate(255 60 60)"/><path d="M60 9 L60 21" transform="rotate(270 60 60)"/><path d="M60 14 L60 21" transform="rotate(285 60 60)"/><path d="M60 9 L60 21" transform="rotate(300 60 60)"/><path d="M60 14 L60 21" transform="rotate(315 60 60)"/><path d="M60 9 L60 21" transform="rotate(330 60 60)"/><path d="M60 14 L60 21" transform="rotate(345 60 60)"/></g>
-    <circle cx="60" cy="60" r="36" fill="none" stroke="currentColor" stroke-width="1.4"/>
-    <circle cx="60" cy="60" r="31.5" fill="none" stroke="currentColor" stroke-width=".7" opacity=".6"/>
-    <text x="60" y="71" text-anchor="middle" font-family="Palatino Linotype,Book Antiqua,Palatino,serif" font-size="34" fill="currentColor">ñ</text>
-    <g stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity=".6"><path d="M60 1v7M60 112v7M1 60h7M112 60h7"/></g>
+  <!-- a heart with a rose inside: the app's icon and the seal at the top of the page -->
+  <symbol id="heartrose" viewBox="0 0 120 120">
+    <path d="M60 110 C19 83 1 59 8 36 C15 14 43 7 60 28 C77 7 105 14 112 36 C119 59 101 83 60 110 Z" fill="none" stroke="#c6a469" stroke-width=".8" opacity=".85"/>
+    <path d="M60 104 C24 80 8 58 14 38 C20 20 44 14 60 34 C76 14 100 20 106 38 C112 58 96 80 60 104 Z" fill="#fdf1f4" stroke="#b4506e" stroke-width="1.6" stroke-linejoin="round"/>
+    <!-- stem and leaves -->
+    <path d="M60 71 C60 78 59.2 85 60 94" fill="none" stroke="#6f8f63" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M59.5 83 C53 76 44 75 39 79 C45 86 53 87 59.5 83 Z" fill="#9dbb8f" stroke="#6f8f63" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M44 80 C49 81 54 82 59 83" fill="none" stroke="#6f8f63" stroke-width=".7" opacity=".8"/>
+    <path d="M60.5 88 C67 81 76 80 81 84 C75 91 67 92 60.5 88 Z" fill="#9dbb8f" stroke="#6f8f63" stroke-width="1.1" stroke-linejoin="round"/>
+    <path d="M76 85 C71 86 66 87 61 88" fill="none" stroke="#6f8f63" stroke-width=".7" opacity=".8"/>
+    <!-- the bloom: outer petals, side petals, the cup, the swirl -->
+    <g stroke="#a8435f" stroke-width="1.1" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M38 50 C35 34 49 26 60 31 C71 26 85 34 82 50 C81 64 71 73 60 73 C49 73 39 64 38 50 Z" fill="#f4bccb"/>
+      <path d="M39 51 C42 65 51 72 60 72 C53 66 48 57 50 45 C45 45 41 47 39 51 Z" fill="#ea93ad"/>
+      <path d="M81 51 C78 65 69 72 60 72 C67 66 72 57 70 45 C75 45 79 47 81 51 Z" fill="#ea93ad"/>
+      <path d="M48 44 C47 35 55 31 60 35 C65 31 73 35 72 44 C72 54 66 60 60 60 C54 60 48 54 48 44 Z" fill="#f7cdd8"/>
+      <path d="M52 48 C54 55 58 57 60 57 C63 57 67 55 68 48" fill="none"/>
+      <path d="M60 39 C66 38 69 43 66 47 C63 51 56 50 55.5 45 C55 42 58 40.5 60.5 42 C62 43 61.5 45.5 59.5 45" fill="none"/>
+    </g>
   </symbol>
   <symbol id="i-say" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
 </svg>
@@ -518,10 +534,10 @@ details.lesson.ok .dnum::after{content:" ✓";color:var(--ok)}
 <div class="wrap">
 
   <header>
-    <svg class="emblem" viewBox="0 0 120 120" aria-hidden="true"><use href="#emblem"/></svg>
+    <svg class="emblem heart" viewBox="0 0 120 120" aria-hidden="true"><use href="#heartrose"/></svg>
     <p class="eyebrow">Hablar &middot; to speak</p>
     <h1>Español</h1>
-    <p class="sub">A little every day, out loud &middot; words &middot; speaking &middot; the irregular verbs &middot; conversation</p>
+    <p class="sub"><span class="poquito">Un poquito cada día</span>a little every day, out loud</p>
     <svg class="orn" viewBox="0 0 320 44" aria-hidden="true"><use href="#flourish"/></svg>
   </header>
 
@@ -2217,12 +2233,22 @@ var Speech = {
     Speech.stop();
     if(AUDIO_SET[k] && Speech.recorded() && typeof window.Audio === "function"){
       try{
-        var a = new window.Audio("audio/" + Speech.voice + "/" + k + ".mp3");
-        a.playbackRate = (Speech.rate / 0.9) * (slow ? 0.75 : 1);
-        a.preservesPitch = true;
+        var a = new window.Audio("audio/" + Speech.voice + "/" + k + ".mp3"), done = false;
+        var speed = (Speech.rate / 0.9) * (slow ? 0.75 : 1);
+        var setSpeed = function(){ a.defaultPlaybackRate = speed; a.playbackRate = speed; a.preservesPitch = a.webkitPreservesPitch = a.mozPreservesPitch = true; };
+        setSpeed();
+        if(a.addEventListener) a.addEventListener("loadedmetadata", setSpeed);   /* iPhone resets the speed on load */
         Speech.playing = a;
+        /* only a file that truly can't load (offline, missing) falls back to the phone voice, and only
+           if it is still the line she asked for: a line cut off by the next one never speaks again */
+        var fallback = function(){ if(done || Speech.playing !== a) return; done = true; Speech.playing = null; Speech.device(t, slow); };
+        if(a.addEventListener) a.addEventListener("error", fallback);
         var p = a.play();
-        if(p && p.catch) p.catch(function(){ Speech.device(t, slow); });   /* offline and not cached yet */
+        if(p && p.catch) p.catch(function(err){
+          var n = err && err.name;
+          if(n === "AbortError" || n === "NotAllowedError") return;   /* interrupted, or the browser blocked sound */
+          fallback();
+        });
         return;
       }catch(e){}
     }
@@ -2405,7 +2431,7 @@ function renderToday(){
   };
   root.innerHTML =
     '<div class="dayhead card-corners">' + CORNERS +
-      '<div class="dn">Día ' + dayN + '</div>' +
+      '<div class="dn">Día ' + dayN + ' <svg class="mini" viewBox="0 0 120 120" aria-hidden="true"><use href="#heartrose"/></svg></div>' +
       '<div class="dmeta">' + (st ? st + '-day streak' : 'Start your streak today') + ' · ' + learnedIndexes(all).length + ' words met</div>' +
       '<div class="gprog"><div class="bar"><i style="width:' + (doneN / STEPS.length * 100) + '%"></i></div></div>' +
     '</div>' +
@@ -2769,6 +2795,7 @@ function renderGrammar(){
 
 /* ================================================================ tabs, modes, settings */
 function showTopic(t){
+  Speech.stop();
   $$(".topic-btn").forEach(function(b){ b.setAttribute("aria-selected", String(b.getAttribute("data-topic") === t)); });
   $$(".topic").forEach(function(s){ s.hidden = s.id !== "topic-" + t; });
   save("topic", t);
@@ -2779,6 +2806,7 @@ function showTopic(t){
   if(seg) activate(t, pressed(seg, "data-mode"));
 }
 function showMode(t, m){
+  Speech.stop();
   var seg = $('[data-modes="' + t + '"]'); if(!seg) return;
   $$("button", seg).forEach(function(b){ b.setAttribute("aria-pressed", String(b.getAttribute("data-mode") === m)); });
   $$('[data-panel^="' + t + '/"]').forEach(function(p){ p.hidden = p.getAttribute("data-panel") !== t + "/" + m; });
