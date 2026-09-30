@@ -263,7 +263,7 @@ head('the page');
 ok(/<title>Español/.test(html) && /manifest\.webmanifest/.test(html) && /apple-touch-icon/.test(html), 'title, manifest and home-screen icon');
 ['today', 'speak', 'words', 'verbs', 'connect', 'grammar'].forEach(t => ok(html.includes('data-topic="' + t + '"') && html.includes('id="topic-' + t + '"'), 'tab ' + t));
 ok((html.match(/id="emblem"/g) || []).length === 1 && /i-mic/.test(html) && /i-say/.test(html), 'the sun seal and the icons');
-ok(/--gold:#a0522d/.test(html) && /\.orn,\.rail\{color:#c6a469\}/.test(html), 'terracotta accent, gold ornaments');
+ok(/--gold:#b4506e/.test(html) && /\.orn,\.rail\{color:#c6a469\}/.test(html), 'rose accent, gold ornaments');
 ok(/Essential Grammar/.test(html) && /Modern Spanish Grammar/.test(html) && /Cervantes/.test(html), 'the sources are credited');
 ok(!/<!--(?![\s\S]*?-->)/.test(html), 'comments are closed');
 
