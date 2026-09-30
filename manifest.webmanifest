@@ -1,0 +1,13 @@
+{
+  "name": "Español — Speak it",
+  "short_name": "Español",
+  "description": "A little Spanish every day, out loud: new words, review, speaking drills, conversations and the irregular verbs.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f1e8",
+  "theme_color": "#f5f1e8",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

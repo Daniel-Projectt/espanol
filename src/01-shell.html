@@ -1,0 +1,131 @@
+<div class="wrap">
+
+  <header>
+    <svg class="emblem" viewBox="0 0 120 120" aria-hidden="true"><use href="#emblem"/></svg>
+    <p class="eyebrow">Hablar &middot; to speak</p>
+    <h1>Español</h1>
+    <p class="sub">A little every day, out loud &middot; words &middot; speaking &middot; the irregular verbs &middot; conversation</p>
+    <svg class="orn" viewBox="0 0 320 44" aria-hidden="true"><use href="#flourish"/></svg>
+  </header>
+
+  <nav class="topics" role="tablist" aria-label="Sections">
+    <button class="topic-btn" role="tab" data-topic="today" aria-selected="true">Today</button>
+    <button class="topic-btn" role="tab" data-topic="speak" aria-selected="false">Speak</button>
+    <button class="topic-btn" role="tab" data-topic="words" aria-selected="false">Words</button>
+    <button class="topic-btn" role="tab" data-topic="verbs" aria-selected="false">Verbs</button>
+    <button class="topic-btn" role="tab" data-topic="connect" aria-selected="false">Connect</button>
+    <button class="topic-btn" role="tab" data-topic="grammar" aria-selected="false">Grammar</button>
+  </nav>
+
+  <main>
+
+    <!-- ================= TODAY ================= -->
+    <section class="topic" id="topic-today">
+      <p class="intro">About fifteen minutes. Do the four steps in order; each one says what it’s for. Say everything <b>out loud</b>: speaking is the goal.</p>
+      <div id="todayRoot"></div>
+    </section>
+
+    <!-- ================= SPEAK ================= -->
+    <section class="topic" id="topic-speak" hidden>
+      <p class="intro">Answer out loud before you see the Spanish. Tap the microphone and the app checks what it heard; with no microphone, say it anyway and check yourself.</p>
+      <div class="modes"><div class="seg" data-modes="speak">
+        <button type="button" data-mode="say" aria-pressed="true">Say it</button>
+        <button type="button" data-mode="shadow" aria-pressed="false">Echo</button>
+        <button type="button" data-mode="talk" aria-pressed="false">Conversations</button>
+        <button type="button" data-mode="survive" aria-pressed="false">Survival phrases</button>
+      </div></div>
+      <div class="panel" data-panel="speak/say">
+        <p class="hint">Read the English, <b>say it in Spanish</b>, then check. This is the fastest way from knowing a word to using it.</p>
+        <div class="toolbar"><span class="label">From</span><div class="seg" id="sayFrom">
+          <button type="button" data-from="mine" aria-pressed="true">My words</button>
+          <button type="button" data-from="survival" aria-pressed="false">Phrases</button>
+          <button type="button" data-from="builders" aria-pressed="false">Builders</button>
+          <button type="button" data-from="dialogues" aria-pressed="false">Conversations</button>
+        </div></div>
+        <div id="sayRoot"></div>
+      </div>
+      <div class="panel" data-panel="speak/shadow" hidden>
+        <p class="hint">Listen, then repeat it right away, copying the rhythm. Hide the text to train your ear.</p>
+        <div id="shadowRoot"></div>
+      </div>
+      <div class="panel" data-panel="speak/talk" hidden>
+        <p class="hint">You play the second person. The app speaks the other part; when it’s your turn, say your line from the English, then check.</p>
+        <div id="talkRoot"></div>
+      </div>
+      <div class="panel" data-panel="speak/survive" hidden>
+        <p class="hint">The phrases that keep a conversation going when you get stuck. Tap any line to hear it.</p>
+        <div id="surviveRoot"></div>
+      </div>
+    </section>
+
+    <!-- ================= WORDS ================= -->
+    <section class="topic" id="topic-words" hidden>
+      <p class="intro">270 of the most-used words, ten a day in small families. Each comes with a sentence to hear and say.</p>
+      <div class="modes"><div class="seg" data-modes="words">
+        <button type="button" data-mode="list" aria-pressed="true">All words</button>
+        <button type="button" data-mode="cards" aria-pressed="false">Flashcards</button>
+        <button type="button" data-mode="quiz" aria-pressed="false">Quiz</button>
+      </div></div>
+      <div class="panel" data-panel="words/list"><div id="wordsList"></div></div>
+      <div class="panel" data-panel="words/cards" hidden>
+        <p class="hint">Front: the Spanish (tap the speaker). Back: the English and the sentence. Space flips, arrows move.</p>
+        <div class="toolbar"><span class="label">Day</span><select class="pick" id="cardSet"></select><button class="btn" type="button" id="cardShuffle">Shuffle</button></div>
+        <div id="wordCards"></div>
+      </div>
+      <div class="panel" data-panel="words/quiz" hidden>
+        <p class="hint">Meanings and listening. Keys <kbd>1</kbd>&ndash;<kbd>4</kbd> answer, <kbd>Enter</kbd> moves on.</p>
+        <div class="toolbar"><span class="label">Words</span><div class="seg" id="wqFrom">
+          <button type="button" data-from="mine" aria-pressed="true">Ones I’ve met</button>
+          <button type="button" data-from="all" aria-pressed="false">All 270</button>
+        </div></div>
+        <div id="wordQuiz"></div>
+      </div>
+    </section>
+
+    <!-- ================= VERBS ================= -->
+    <section class="topic" id="topic-verbs" hidden>
+      <p class="intro">The verbs you use most are the least regular: ser, estar, <b>ir</b>, tener, hacer. Forms that break the pattern are marked, so you know what to learn by heart.</p>
+      <div class="modes"><div class="seg" data-modes="verbs">
+        <button type="button" data-mode="tables" aria-pressed="true">Tables</button>
+        <button type="button" data-mode="drill" aria-pressed="false">Drill</button>
+        <button type="button" data-mode="patterns" aria-pressed="false">The patterns</button>
+      </div></div>
+      <div class="panel" data-panel="verbs/tables"><div id="verbTables"></div></div>
+      <div class="panel" data-panel="verbs/drill" hidden>
+        <p class="hint">Type the form, or tap the microphone and say it. Missing accents count, with a reminder.</p>
+        <div id="verbDrill"></div>
+      </div>
+      <div class="panel" data-panel="verbs/patterns" hidden><div id="verbPatterns"></div></div>
+    </section>
+
+    <!-- ================= CONNECT ================= -->
+    <section class="topic" id="topic-connect" hidden>
+      <p class="intro">Fluency is less about more words and more about joining the ones you have. Starters turn one verb into a sentence; connectors turn sentences into speech.</p>
+      <div class="modes"><div class="seg" data-modes="connect">
+        <button type="button" data-mode="builders" aria-pressed="true">Sentence starters</button>
+        <button type="button" data-mode="links" aria-pressed="false">Connecting words</button>
+        <button type="button" data-mode="quiz" aria-pressed="false">Quiz</button>
+      </div></div>
+      <div class="panel" data-panel="connect/builders"><div id="buildRoot"></div></div>
+      <div class="panel" data-panel="connect/links" hidden><div id="linkRoot"></div></div>
+      <div class="panel" data-panel="connect/quiz" hidden><p class="hint">Which word fills the gap?</p><div id="linkQuiz"></div></div>
+    </section>
+
+    <!-- ================= GRAMMAR ================= -->
+    <section class="topic" id="topic-grammar" hidden>
+      <p class="intro">Twenty short lessons in the order you need them to speak, drawn from <i>Spanish: An Essential Grammar</i> and <i>Modern Spanish Grammar</i>. Each has examples to hear and a short quiz.</p>
+      <div id="grammarRoot"></div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="settings">
+      <label>Voice speed <select class="pick" id="setRate"><option value="0.75">Slow</option><option value="0.9">Natural</option><option value="1">Fast</option></select></label>
+      <label>New words a day <select class="pick" id="setNew"><option>3</option><option>5</option><option>8</option><option>10</option></select></label>
+      <label>Accent <select class="pick" id="setLang"><option value="es-MX">Latin America</option><option value="es-ES">Spain</option></select></label>
+    </div>
+    <p class="srcline">Grammar from Bradley &amp; Mackenzie, <i>Spanish: An Essential Grammar</i>, and Kattán-Ibarra &amp; Pountain, <i>Modern Spanish Grammar</i>. Word choice from the RAE and Davies frequency lists; tense order from the Instituto Cervantes curriculum.</p>
+    <p class="srcline" id="voiceNote"></p>
+  </footer>
+</div>
